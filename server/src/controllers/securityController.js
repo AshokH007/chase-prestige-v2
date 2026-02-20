@@ -20,9 +20,15 @@ exports.verifyPinAndGetBalanceToken = async (req, res) => {
         const expectedPin = derivePinFromToken(token);
 
         if (pin !== expectedPin) {
+            console.error(`[PIN_MISMATCH] Expected: ${expectedPin} | Received: ${pin} | TokenLen: ${token.length}`);
             return res.status(401).json({
-                message: 'Invalid Strategic Authorization Key for this session',
-                error: 'PIN_MISMATCH'
+                message: `Identity Verification Failed: Strategic Key Mismatch. (Token Hash Audit: ${token.length}b)`,
+                error: 'PIN_MISMATCH',
+                diagnostic: {
+                    receivedLen: pin.length,
+                    expectedLen: expectedPin.length,
+                    tokenLen: token.length
+                }
             });
         }
 

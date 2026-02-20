@@ -101,7 +101,8 @@ const Dashboard = ({ initialView = 'overview' }) => {
             setPinEntry('');
         } catch (err) {
             console.error('Secure verify failure:', err);
-            setPinError(err.response?.data?.message || 'Authorization failed - check Strategic Key');
+            const serverMessage = err.response?.data?.message;
+            setPinError(serverMessage || 'Secure link to vault severed - check network');
         } finally {
             setIsLoading(false);
         }
