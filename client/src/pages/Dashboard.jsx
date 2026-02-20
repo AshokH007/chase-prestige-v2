@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-const BUILD_VERSION = "2.5.2"; // CACHE BUSTER FORCE
+const BUILD_VERSION = "2.5.3"; // VERBOSE DIAGNOSTICS
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import TransactionList from '../components/TransactionList';
@@ -102,7 +102,8 @@ const Dashboard = ({ initialView = 'overview' }) => {
         } catch (err) {
             console.error('Secure verify failure:', err);
             const serverMessage = err.response?.data?.message;
-            setPinError(serverMessage || 'Secure link to vault severed - check network');
+            const fallbackMessage = `Secure link severed: ${err.message} [URL: ${API_BASE}]`;
+            setPinError(serverMessage || fallbackMessage);
         } finally {
             setIsLoading(false);
         }
