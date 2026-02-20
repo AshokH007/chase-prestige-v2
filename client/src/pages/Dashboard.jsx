@@ -20,6 +20,7 @@ import { clsx } from 'clsx';
 const Dashboard = ({ initialView = 'overview' }) => {
     const { user, sessionPin, API_BASE } = useAuth();
     const [accountData, setAccountData] = useState(null);
+    const [accountBalance, setAccountBalance] = useState(undefined);
     const [transactions, setTransactions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isBalanceVisible, setIsBalanceVisible] = useState(false);
@@ -40,12 +41,12 @@ const Dashboard = ({ initialView = 'overview' }) => {
                 .catch(err => console.error('History fetch failed', err));
 
             const profilePromise = axios.get(`${API_BASE}/api/account/profile`)
-                .then(res => setAccountData(prev => ({ ...prev, ...res.data })))
+                .then(res => setAccountData(res.data))
                 .catch(err => console.error('Profile fetch failed', err));
 
             const balancePromise = balanceToken
                 ? axios.get(`${API_BASE}/api/account/balance`, { headers: { 'x-balance-token': balanceToken } })
-                    .then(res => setAccountData(prev => ({ ...prev, balance: res.data.balance })))
+                    .then(res => setAccountBalance(res.data.balance))
                     .catch(err => console.error('Balance fetch failed', err))
                 : null;
 
@@ -93,7 +94,7 @@ const Dashboard = ({ initialView = 'overview' }) => {
             const balanceRes = await axios.get(`${API_BASE}/api/account/balance`, {
                 headers: { 'x-balance-token': newToken }
             });
-            setAccountData(prev => ({ ...prev, balance: balanceRes.data.balance }));
+            setAccountBalance(balanceRes.data.balance);
         } catch (err) {
             setPinError('Invalid Transaction PIN');
         }
@@ -149,7 +150,7 @@ const Dashboard = ({ initialView = 'overview' }) => {
                                 Account Number
                             </p>
                             <p className="text-sm font-mono font-bold text-[#000B1E] tracking-widest">
-                                {isBalanceVisible ? accountData?.account_number : "ACC-••••-••••"}
+                                {isBalanceVisible ? accountData?.account_number || "ACC-••••-••••" : "ACC-••••-••••"}
                             </p>
                         </div>
                         <div
@@ -202,8 +203,8 @@ const Dashboard = ({ initialView = 'overview' }) => {
                                             <span className="text-3xl text-[#C8AA6E] font-light font-['Playfair_Display']">$</span>
                                             <span className="text-7xl font-bold tracking-tighter font-['Playfair_Display'] block min-w-[300px]">
                                                 {isBalanceVisible ? (
-                                                    accountData?.balance !== undefined ? (
-                                                        parseFloat(accountData.balance).toLocaleString(undefined, { minimumFractionDigits: 2 })
+                                                    accountBalance !== undefined ? (
+                                                        parseFloat(accountBalance).toLocaleString(undefined, { minimumFractionDigits: 2 })
                                                     ) : (
                                                         <span className="flex items-center gap-2">
                                                             <div className="w-8 h-8 border-2 border-[#C8AA6E] border-t-transparent rounded-full animate-spin"></div>
