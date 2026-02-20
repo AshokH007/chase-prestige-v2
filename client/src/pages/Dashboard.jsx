@@ -86,18 +86,19 @@ const Dashboard = ({ initialView = 'overview' }) => {
             const res = await axios.post(`${API_BASE}/api/account/verify-pin`, { pin: pinEntry });
             const newToken = res.data.balanceToken;
 
+            // 2. IMMEDIATE FETCH - Verify liquidity before revealing
+            const balanceRes = await axios.get(`${API_BASE}/api/account/balance`, {
+                headers: { 'x-balance-token': newToken }
+            });
+
+            setAccountBalance(balanceRes.data.balance);
             setBalanceToken(newToken);
             setIsBalanceVisible(true);
             setIsVerifyingPin(false);
             setPinEntry('');
-
-            // 2. IMMEDIATE FETCH - Don't wait for the useEffect cycle
-            const balanceRes = await axios.get(`${API_BASE}/api/account/balance`, {
-                headers: { 'x-balance-token': newToken }
-            });
-            setAccountBalance(balanceRes.data.balance);
         } catch (err) {
-            setPinError('Invalid Transaction PIN');
+            console.error('Secure verify failure:', err);
+            setPinError(err.response?.data?.message || 'Authorization failed - check Strategic Key');
         }
     };
 
@@ -205,8 +206,6 @@ const Dashboard = ({ initialView = 'overview' }) => {
                                             <span className="text-7xl font-bold tracking-tighter font-['Playfair_Display'] block min-w-[300px]">
                                                 {isBalanceVisible && accountBalance !== undefined ? (
                                                     parseFloat(accountBalance).toLocaleString(undefined, { minimumFractionDigits: 2 })
-                                                ) : isBalanceVisible ? (
-                                                    "0.00" // Standard fallback, never show 'Hydrating'
                                                 ) : (
                                                     "••••••"
                                                 )}
