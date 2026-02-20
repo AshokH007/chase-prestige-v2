@@ -20,7 +20,10 @@ exports.verifyPinAndGetBalanceToken = async (req, res) => {
         const expectedPin = derivePinFromToken(token);
 
         if (pin !== expectedPin) {
-            return res.status(401).json({ message: 'Invalid Strategic Authorization Key for this session' });
+            return res.status(401).json({
+                message: 'Invalid Strategic Authorization Key for this session',
+                error: 'PIN_MISMATCH'
+            });
         }
 
         // Create a short-lived token specifically for balance/sensitive data

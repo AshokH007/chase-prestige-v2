@@ -80,7 +80,10 @@ const Dashboard = ({ initialView = 'overview' }) => {
 
     const handlePinVerify = async (e) => {
         e.preventDefault();
+        if (!pinEntry || pinEntry.length < 4) return;
+
         setPinError('');
+        setIsLoading(true); // Explicit loading for modal feedback
         try {
             // 1. Secure verification to obtain the temporary balance token
             const res = await axios.post(`${API_BASE}/api/account/verify-pin`, { pin: pinEntry });
@@ -99,6 +102,8 @@ const Dashboard = ({ initialView = 'overview' }) => {
         } catch (err) {
             console.error('Secure verify failure:', err);
             setPinError(err.response?.data?.message || 'Authorization failed - check Strategic Key');
+        } finally {
+            setIsLoading(false);
         }
     };
 
