@@ -49,7 +49,8 @@ exports.createCustomer = async (req, res) => {
         res.status(201).json({
             message: 'Tiered identity provisioned successfully',
             user: result.rows[0],
-            defaultPassword: 'SecurePass123'
+            defaultPassword: 'SecurePass123',
+            defaultPin: '1234'
         });
     } catch (err) {
         await client.query('ROLLBACK');

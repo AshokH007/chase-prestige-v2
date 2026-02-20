@@ -110,6 +110,10 @@ const OnboardCustomerModal = ({ isOpen, onClose, onSuccess, API_BASE }) => {
                                     <span className="text-[9px] uppercase font-bold text-slate-300 tracking-widest">Access Key</span>
                                     <span className="text-xs font-bold text-[#C8AA6E]">{result.defaultPassword}</span>
                                 </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-[9px] uppercase font-bold text-slate-300 tracking-widest">Auth PIN</span>
+                                    <span className="text-xs font-bold text-[#C8AA6E]">{result.defaultPin || '1234'}</span>
+                                </div>
                             </div>
 
                             <button
