@@ -1,0 +1,39 @@
+services:
+  # 1. Backend API Service
+  - type: web
+    name: banking-platform-simulation
+    plan: free
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_URL
+        value: https://banking-platform-ui.onrender.com
+      - key: TOKEN_EXPIRY
+        value: 30m
+      - key: NODE_VERSION
+        value: 20
+    rootDir: server
+
+  # 2. Frontend Static Site
+  - type: web
+    name: banking-platform-ui
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://banking-platform-simulation.onrender.com
+      - key: NODE_VERSION
+        value: 20
+    rootDir: client
