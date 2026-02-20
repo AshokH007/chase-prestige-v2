@@ -32,29 +32,27 @@ const Dashboard = ({ initialView = 'overview' }) => {
     const isFrozen = user?.status === 'FROZEN';
 
     const fetchData = async () => {
+        setIsLoading(true);
         try {
-            const historyPromise = axios.get(`${API_BASE}/api/transactions/history`);
-            const profilePromise = axios.get(`${API_BASE}/api/account/profile`);
+            // Independent promises for non-blocking hydration
+            const historyPromise = axios.get(`${API_BASE}/api/transactions/history`)
+                .then(res => setTransactions(res.data))
+                .catch(err => console.error('History fetch failed', err));
+
+            const profilePromise = axios.get(`${API_BASE}/api/account/profile`)
+                .then(res => setAccountData(prev => ({ ...prev, ...res.data })))
+                .catch(err => console.error('Profile fetch failed', err));
+
             const balancePromise = balanceToken
                 ? axios.get(`${API_BASE}/api/account/balance`, { headers: { 'x-balance-token': balanceToken } })
+                    .then(res => setAccountData(prev => ({ ...prev, balance: res.data.balance })))
+                    .catch(err => console.error('Balance fetch failed', err))
                 : null;
 
-            const [historyRes, profileRes, balanceRes] = await Promise.all([
-                historyPromise,
-                profilePromise,
-                balancePromise
-            ]);
-
-            setTransactions(historyRes.data);
-
-            const updatedAccountData = { ...profileRes.data };
-            if (balanceRes) {
-                updatedAccountData.balance = balanceRes.data.balance;
-            }
-
-            setAccountData(prev => ({ ...prev, ...updatedAccountData }));
+            // Optional: wait for critical data if needed, but here we prefer reactive updates
+            await Promise.allSettled([historyPromise, profilePromise, balancePromise].filter(Boolean));
         } catch (err) {
-            console.error('Failed to fetch dashboard data', err);
+            console.error('Core hydration failure', err);
         } finally {
             setIsLoading(false);
         }
@@ -82,11 +80,20 @@ const Dashboard = ({ initialView = 'overview' }) => {
         e.preventDefault();
         setPinError('');
         try {
+            // 1. Secure verification to obtain the temporary balance token
             const res = await axios.post(`${API_BASE}/api/account/verify-pin`, { pin: pinEntry });
-            setBalanceToken(res.data.balanceToken);
+            const newToken = res.data.balanceToken;
+
+            setBalanceToken(newToken);
             setIsBalanceVisible(true);
             setIsVerifyingPin(false);
             setPinEntry('');
+
+            // 2. IMMEDIATE FETCH - Don't wait for the useEffect cycle
+            const balanceRes = await axios.get(`${API_BASE}/api/account/balance`, {
+                headers: { 'x-balance-token': newToken }
+            });
+            setAccountData(prev => ({ ...prev, balance: balanceRes.data.balance }));
         } catch (err) {
             setPinError('Invalid Transaction PIN');
         }
