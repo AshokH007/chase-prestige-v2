@@ -1,72 +1,100 @@
 const db = require('../db');
+const axios = require('axios');
 
 /**
- * AI Chat Endpoint (Simulated Oracle)
- * Provides context-aware financial advice based on user's portfolio.
+ * INSTITUTIONAL AI CORE (Powered by Hugging Face)
+ * Integrates real-time portfolio context with Large Language Models.
  */
-exports.chat = async (req, res) => {
+exports.chat = async (req, res, next) => {
     const { message } = req.body;
     const userId = req.user.id;
+    const isStaff = req.user.role === 'STAFF';
+
+    // Model selection: DeepSeek-R1 is excellent for reasoning
+    const MODEL_ID = process.env.AI_MODEL_ID || "deepseek-ai/DeepSeek-R1-Distill-Llama-70B";
+    const HF_TOKEN = process.env.HF_TOKEN;
 
     try {
-        // 1. Gather User Context for "Intelligence"
-        const [balanceRes, assetsRes, loansRes, billsRes] = await Promise.all([
-            db.pool.query('SELECT full_name, balance FROM banking.users WHERE id = $1', [userId]),
-            db.pool.query('SELECT symbol, quantity, avg_buy_price FROM banking.assets WHERE user_id = $1 AND quantity > 0', [userId]),
-            db.pool.query('SELECT amount, status FROM banking.loans WHERE user_id = $1 AND status = $2', [userId, 'APPROVED']),
-            db.pool.query('SELECT amount, due_date FROM banking.bills WHERE user_id = $1 AND status = $2', [userId, 'PENDING'])
+        // 1. GATHER REAL-TIME PORTFOLIO CONTEXT
+        const [userRes, assetsRes, loansRes, billsRes] = await Promise.all([
+            db.pool.query('SELECT full_name, balance, customer_id, account_number, role FROM banking.users WHERE id = $1', [userId]),
+            db.pool.query('SELECT symbol, quantity FROM banking.assets WHERE user_id = $1 AND quantity > 0', [userId]),
+            db.pool.query('SELECT amount FROM banking.loans WHERE user_id = $1 AND status = $2', [userId, 'APPROVED']),
+            db.pool.query('SELECT amount FROM banking.bills WHERE user_id = $1 AND status = $2', [userId, 'PENDING'])
         ]);
 
-        const userRecord = balanceRes.rows[0];
-        const fullName = userRecord?.full_name || 'Valued Client';
-        const balance = parseFloat(userRecord?.balance || 0);
-        const assets = assetsRes.rows;
-        const activeLoans = loansRes.rows;
-        const pendingBills = billsRes.rows;
+        const user = userRes.rows[0];
+        const assets = assetsRes.rows.map(a => `${a.quantity} ${a.symbol}`).join(', ');
+        const totalDebt = loansRes.rows.reduce((sum, l) => sum + parseFloat(l.amount), 0);
+        const totalBills = billsRes.rows.reduce((sum, b) => sum + parseFloat(b.amount), 0);
 
-        const totalDebt = activeLoans.reduce((sum, l) => sum + parseFloat(l.amount), 0);
-        const totalBills = pendingBills.reduce((sum, b) => sum + parseFloat(b.amount), 0);
-
-        // 2. Simple Heuristic-Based Logic (Prestige GPT Simulation)
-        let response = "";
-        const input = message.toLowerCase();
-
-        if (input.includes('status') || input.includes('overview') || input.includes('portfolio')) {
-            response = `Your current liquidity is $${balance.toLocaleString()}. You hold ${assets.length} institutional assets. `;
-            if (totalBills > 0) {
-                response += `I notice you have $${totalBills.toLocaleString()} in pending liabilities. I recommend settling these while your liquidity is high.`;
-            } else {
-                response += `Your financial standing is exceptional. I see no immediate liabilities needing attention.`;
-            }
-        }
-        else if (input.includes('invest') || input.includes('market') || input.includes('buying')) {
-            response = `Based on your SPY and exposure to digital assets, you have a balanced risk profile. With $${balance.toLocaleString()} in cash, you have the capital to expand your BTC position, which is currently trending positively.`;
-        }
-        else if (input.includes('debt') || input.includes('loan') || input.includes('repayment')) {
-            if (totalDebt > 0) {
-                response = `You have $${totalDebt.toLocaleString()} in active credit facilities. Given your cash flow, I suggest maintaining the current repayment schedule to optimize your internal liquidity metrics.`;
-            } else {
-                response = `You currently have no active debt. Your balance sheet is clean, making you an ideal candidate for our high-capital loan facilities if needed for strategic expansion.`;
-            }
-        }
-        else if (input.includes('risk') || input.includes('security')) {
-            response = `Chase Prestige security protocols are fully active. Your Crypto Vault is managed under multi-sig custody. Your exposure is diversified across equities and digital assets, putting you in the top 5% of risk-adjusted portfolios.`;
-        }
-        else {
-            response = `Welcome, ${fullName}. I am the Prestige AI Concierge. I have analyzed your portfolio: you have $${balance.toLocaleString()} in cash and exposure to ${assets.length > 0 ? assets[0].symbol : 'global'} markets. How can I assist with your strategic capital today?`;
+        // 2. CONSTRUCT SYSTEM PERSONALITY
+        let systemPrompt = "";
+        if (isStaff) {
+            systemPrompt = `You are the Chase Prestige Institutional Oracle. You provide elite analysis to Bank Officers. 
+            CONTEXT: You are speaking to Officer ${user.full_name}. 
+            SYSTEM METRICS: Total Debt in system is calculated via ledger. 
+            TONE: Precise, cold, institutional, authoritative. 
+            RULES: Do not use emojis. Focus on risk management and compliance. If asked about a user, focus on their 'customer_id' and exposure.`;
+        } else {
+            systemPrompt = `You are the Chase Prestige AI Concierge. You are a world-class financial advisor for ultra-high-net-worth individuals.
+            USER CONTEXT: Name: ${user.full_name}, Balance: $${parseFloat(user.balance).toLocaleString()}, Assets: ${assets || 'None'}, Debt: $${totalDebt}, Pending Bills: $${totalBills}.
+            TONE: Elegant, sophisticated, proactive, and secure. Use "we" and "our" to refer to the bank.
+            RULES: Help the client optimize their wealth. If they have bills, suggest settling them. If they have high balance, suggest investments in BTC or SPY. Never give generic advice.`;
         }
 
-        // Simulate network delay for "AI thinking"
-        setTimeout(() => {
-            res.json({
-                user: fullName,
-                response: response,
-                timestamp: new Date()
+        // 3. CALL HUGGING FACE INFERENCE API
+        if (!HF_TOKEN) {
+            // Fallback to simulation if no token provided yet
+            return res.json({
+                response: `[SIMULATION MODE] I have analyzed your portfolio, ${user.full_name.split(' ')[0]}. Currently, your liquidity is $${parseFloat(user.balance).toLocaleString()}. Please configure 'HF_TOKEN' in the environment to activate my advanced reasoning core.`,
+                isSimulated: true
             });
-        }, 800);
+        }
+
+        const hfResponse = await axios.post(
+            `https://api-inference.huggingface.co/models/${MODEL_ID}`,
+            {
+                inputs: `<|system|>\n${systemPrompt}\n<|user|>\n${message}\n<|assistant|>\n`,
+                parameters: {
+                    max_new_tokens: 500,
+                    temperature: 0.7,
+                    return_full_text: false
+                }
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${HF_TOKEN}`,
+                    'Content-Type': 'application/json'
+                },
+                timeout: 30000 // 30s timeout for larger models
+            }
+        );
+
+        let aiText = "";
+        if (Array.isArray(hfResponse.data)) {
+            aiText = hfResponse.data[0].generated_text;
+        } else if (hfResponse.data.generated_text) {
+            aiText = hfResponse.data.generated_text;
+        } else {
+            aiText = JSON.stringify(hfResponse.data);
+        }
+
+        // Clean up the response (remove prompt leakage if any)
+        aiText = aiText.replace(/<\|.*?\|>/g, "").trim();
+
+        res.json({
+            response: aiText,
+            model: MODEL_ID,
+            timestamp: new Date()
+        });
 
     } catch (err) {
-        console.error('AI Insights Engine Error:', err.message);
-        res.status(500).json({ message: 'AI Engine is temporarily optimizing. Please wait.' });
+        console.error('AI Strategy Core Error:', err.response?.data || err.message);
+        res.status(500).json({
+            message: 'Our analytical core is momentarily saturated. Please re-issue your request.',
+            error: process.env.NODE_ENV === 'development' ? err.message : undefined
+        });
     }
 };
+
