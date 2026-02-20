@@ -162,7 +162,7 @@ const Login = () => {
                 {/* The Luxury Image */}
                 <div className="absolute inset-0 bg-cover bg-center transition-transform duration-[20s] hover:scale-105"
                     style={{
-                        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
+                        background: 'radial-gradient(circle at 50% 50%, rgba(200, 170, 110, 0.08) 0%, transparent 60%), linear-gradient(135deg, #000B1E 0%, #00163A 100%)'
                     }}>
                 </div>
 
