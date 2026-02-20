@@ -33,23 +33,28 @@ const Dashboard = ({ initialView = 'overview' }) => {
 
     const fetchData = async () => {
         try {
-            // History can be public (emails/names), but balance is protected
-            const historyRes = await axios.get(`${API_BASE}/api/transactions/history`);
+            const historyPromise = axios.get(`${API_BASE}/api/transactions/history`);
+            const profilePromise = axios.get(`${API_BASE}/api/account/profile`);
+            const balancePromise = balanceToken
+                ? axios.get(`${API_BASE}/api/account/balance`, { headers: { 'x-balance-token': balanceToken } })
+                : null;
+
+            const [historyRes, profileRes, balanceRes] = await Promise.all([
+                historyPromise,
+                profilePromise,
+                balancePromise
+            ]);
+
             setTransactions(historyRes.data);
 
-            // Fetch non-sensitive info
-            const profileRes = await axios.get(`${API_BASE}/api/account/profile`);
-            setAccountData(prev => ({ ...prev, ...profileRes.data }));
-
-            // If we have a balance token, fetch the balance
-            if (balanceToken) {
-                const balanceRes = await axios.get(`${API_BASE}/api/account/balance`, {
-                    headers: { 'x-balance-token': balanceToken }
-                });
-                setAccountData(prev => ({ ...prev, ...balanceRes.data }));
+            const updatedAccountData = { ...profileRes.data };
+            if (balanceRes) {
+                updatedAccountData.balance = balanceRes.data.balance;
             }
+
+            setAccountData(prev => ({ ...prev, ...updatedAccountData }));
         } catch (err) {
-            console.error('Failed to fetch dashboard data');
+            console.error('Failed to fetch dashboard data', err);
         } finally {
             setIsLoading(false);
         }
