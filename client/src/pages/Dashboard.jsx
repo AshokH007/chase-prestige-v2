@@ -97,27 +97,6 @@ const Dashboard = ({ initialView = 'overview' }) => {
 
     return (
         <div className="animate-in fade-in duration-700">
-            {/* Strategic Authorization Key Alert (Dynamic Session Key) */}
-            {sessionPin && (
-                <div className="mb-8 p-6 bg-slate-900 border border-[#C8AA6E]/30 rounded-[2rem] flex items-center justify-between shadow-2xl shadow-indigo-950/20 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-32 h-full bg-[#C8AA6E]/5 skew-x-[-20deg] translate-x-16 group-hover:translate-x-12 transition-transform duration-700"></div>
-                    <div className="flex items-center gap-4 relative z-10">
-                        <div className="w-12 h-12 bg-[#000B1E] border border-[#C8AA6E]/20 rounded-xl flex items-center justify-center text-[#C8AA6E] shadow-lg">
-                            <Shield size={24} />
-                        </div>
-                        <div>
-                            <h3 className="text-[10px] font-bold text-[#C8AA6E] uppercase tracking-[0.2em] mb-1">Strategic Authorization Active</h3>
-                            <p className="text-sm font-bold text-white tracking-tight">Your 4-digit session key for balance reveal and transfers is: <span className="font-mono text-lg bg-white/10 px-3 py-1 rounded-lg ml-2">{sessionPin}</span></p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3 relative z-10">
-                        <div className="h-8 w-px bg-white/10 mx-2"></div>
-                        <CheckCircle2 size={18} className="text-emerald-400" />
-                        <span className="text-[9px] font-bold text-white uppercase tracking-widest hidden sm:block">Session Synchronized</span>
-                    </div>
-                </div>
-            )}
-
             {/* Institutional Hold Alert */}
             {isFrozen && (
                 <div className="mb-8 p-6 bg-rose-50 border border-rose-100 rounded-[2rem] flex items-center justify-between">
@@ -211,7 +190,14 @@ const Dashboard = ({ initialView = 'overview' }) => {
                                             <span className="text-3xl text-[#C8AA6E] font-light font-['Playfair_Display']">$</span>
                                             <span className="text-7xl font-bold tracking-tighter font-['Playfair_Display'] block min-w-[300px]">
                                                 {isBalanceVisible ? (
-                                                    parseFloat(accountData?.balance || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })
+                                                    accountData?.balance !== undefined ? (
+                                                        parseFloat(accountData.balance).toLocaleString(undefined, { minimumFractionDigits: 2 })
+                                                    ) : (
+                                                        <span className="flex items-center gap-2">
+                                                            <div className="w-8 h-8 border-2 border-[#C8AA6E] border-t-transparent rounded-full animate-spin"></div>
+                                                            <span className="text-3xl opacity-50 uppercase tracking-widest">Hydrating...</span>
+                                                        </span>
+                                                    )
                                                 ) : (
                                                     "••••••"
                                                 )}
@@ -316,7 +302,18 @@ const Dashboard = ({ initialView = 'overview' }) => {
                             <Lock className="text-[#C8AA6E]" size={32} />
                         </div>
                         <h3 className="text-2xl font-bold text-[#000B1E] mb-2 font-['Playfair_Display']">Secure Disclosure</h3>
-                        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-8">Enter your 4-digit Transaction PIN</p>
+                        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-6">Enter your 4-digit Transaction PIN</p>
+
+                        {/* Just-in-Time Session Key Disclosure */}
+                        {sessionPin && (
+                            <div className="mb-6 p-4 bg-slate-900 rounded-2xl border border-[#C8AA6E]/20 text-left relative overflow-hidden">
+                                <p className="text-[8px] font-bold text-[#C8AA6E] uppercase tracking-[0.2em] mb-1 relative z-10">Strategic Authorization Key</p>
+                                <p className="text-sm font-bold text-white relative z-10">
+                                    Your session key is: <span className="font-mono text-[#C8AA6E] text-lg bg-white/10 px-2 py-0.5 rounded ml-1">{sessionPin}</span>
+                                </p>
+                                <div className="absolute top-0 right-0 w-16 h-full bg-[#C8AA6E]/5 skew-x-[-20deg] translate-x-8"></div>
+                            </div>
+                        )}
 
                         <form onSubmit={handlePinVerify} className="space-y-6">
                             <input
