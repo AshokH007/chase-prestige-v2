@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { clsx } from 'clsx';
-// Placeholder for the luxury image - will be generated shortly
-import LoginBg from '../assets/images/luxury_bank_pillars.webp';
+// Placeholder for the luxury image - using CSS gradient fallback until generation succeeds
+// import LoginBg from '../assets/images/luxury_bank_pillars.webp'; 
 
 const Login = () => {
     const [identifier, setIdentifier] = useState('');
@@ -162,7 +161,10 @@ const Login = () => {
             <div className="hidden lg:block lg:w-[55%] xl:w-[60%] relative overflow-hidden bg-[#0A0A0A]">
                 {/* The Luxury Image */}
                 <div className="absolute inset-0 bg-cover bg-center transition-transform duration-[20s] hover:scale-105"
-                    style={{ backgroundImage: `url(${LoginBg})` }}>
+                    style={{
+                        // backgroundImage: `url(${LoginBg})`,
+                        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
+                    }}>
                 </div>
 
                 {/* Overlays */}
