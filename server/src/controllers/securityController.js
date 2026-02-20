@@ -23,26 +23,33 @@ exports.verifyPinAndGetBalanceToken = async (req, res) => {
             console.error(`[PIN_MISMATCH] Expected: ${expectedPin} | Received: ${pin} | TokenLen: ${token.length}`);
             return res.status(401).json({
                 message: `Identity Verification Failed: Strategic Key Mismatch. (Token Hash Audit: ${token.length}b)`,
-                error: 'PIN_MISMATCH',
-                diagnostic: {
-                    receivedLen: pin.length,
-                    expectedLen: expectedPin.length,
-                    tokenLen: token.length
-                }
+                error: 'PIN_MISMATCH'
             });
         }
 
-        // Create a short-lived token specifically for balance/sensitive data
+        // 3. SINGLE-PHASE REVEAL: Fetch balance immediately to avoid second trip
+        const balanceResult = await db.query(
+            'SELECT balance FROM banking.users WHERE id = $1',
+            [userId]
+        );
+
+        if (balanceResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Account context lost' });
+        }
+
+        const balance = balanceResult.rows[0].balance;
+
+        // Create a short-lived token for any subsequent sensitive syncs
         const balanceToken = jwt.sign(
             { id: userId, purpose: 'balance_reveal' },
             process.env.JWT_SECRET,
-            { expiresIn: '5m' } // Valid for 5 minutes
+            { expiresIn: '5m' }
         );
 
-        res.json({ balanceToken });
+        res.json({ balance, balanceToken });
     } catch (err) {
         console.error('PIN verification error:', err.message);
-        res.status(500).json({ message: 'Internal security error' });
+        res.status(500).json({ message: 'Internal security error - Vault offline' });
     }
 };
 

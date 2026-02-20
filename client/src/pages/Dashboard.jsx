@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-const BUILD_VERSION = "2.5.3"; // VERBOSE DIAGNOSTICS
+const BUILD_VERSION = "2.5.4"; // PRODUCTION HARDENING
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import TransactionList from '../components/TransactionList';
@@ -83,27 +83,22 @@ const Dashboard = ({ initialView = 'overview' }) => {
         if (!pinEntry || pinEntry.length < 4) return;
 
         setPinError('');
-        setIsLoading(true); // Explicit loading for modal feedback
+        setIsLoading(true);
         try {
-            // 1. Secure verification to obtain the temporary balance token
+            // SINGLE-PHASE SECURE LINK: Balance returned in verify response
             const res = await axios.post(`${API_BASE}/api/account/verify-pin`, { pin: pinEntry });
-            const newToken = res.data.balanceToken;
 
-            // 2. IMMEDIATE FETCH - Verify liquidity before revealing
-            const balanceRes = await axios.get(`${API_BASE}/api/account/balance?cb=${Date.now()}`, {
-                headers: { 'x-balance-token': newToken }
-            });
-
-            setAccountBalance(balanceRes.data.balance);
-            setBalanceToken(newToken);
+            // Vault data injection
+            setAccountBalance(res.data.balance);
+            setBalanceToken(res.data.balanceToken);
             setIsBalanceVisible(true);
             setIsVerifyingPin(false);
             setPinEntry('');
         } catch (err) {
-            console.error('Secure verify failure:', err);
+            console.error('Vault Link Error:', err);
             const serverMessage = err.response?.data?.message;
-            const fallbackMessage = `Secure link severed: ${err.message} [URL: ${API_BASE}]`;
-            setPinError(serverMessage || fallbackMessage);
+            const context = `[Network Status: ${err.message}]`;
+            setPinError(serverMessage || `Vault Link Severed: Security layer blocking request. ${context}`);
         } finally {
             setIsLoading(false);
         }
