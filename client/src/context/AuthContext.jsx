@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }) => {
             sessionStorage.setItem('banking_token', token);
             sessionStorage.setItem('banking_user', JSON.stringify(user));
             sessionStorage.setItem('banking_pin', pin);
+            sessionStorage.setItem('banking_pin_ts', Date.now());
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
             setUser(user);

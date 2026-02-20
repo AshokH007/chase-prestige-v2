@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-const BUILD_VERSION = "2.5.1"; // CACHE BUSTER
+const BUILD_VERSION = "2.5.2"; // CACHE BUSTER FORCE
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import TransactionList from '../components/TransactionList';
@@ -90,7 +90,7 @@ const Dashboard = ({ initialView = 'overview' }) => {
             const newToken = res.data.balanceToken;
 
             // 2. IMMEDIATE FETCH - Verify liquidity before revealing
-            const balanceRes = await axios.get(`${API_BASE}/api/account/balance`, {
+            const balanceRes = await axios.get(`${API_BASE}/api/account/balance?cb=${Date.now()}`, {
                 headers: { 'x-balance-token': newToken }
             });
 
