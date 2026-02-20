@@ -1,31 +1,26 @@
 const db = require('../db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { derivePinFromToken } = require('../utils/security');
 
 /**
- * Verify Transaction PIN and generate a temporary balance token
+ * Verify Transaction PIN (Session-Derived) and generate a temporary balance token
  */
 exports.verifyPinAndGetBalanceToken = async (req, res) => {
     const { pin } = req.body;
     const userId = req.user.id;
+    const token = req.token; // From auth middleware
 
     if (!pin) {
-        return res.status(400).json({ message: 'Transaction PIN is required' });
+        return res.status(400).json({ message: 'Strategic Authorization Key is required' });
     }
 
     try {
-        // Query segregated credentials for transaction authorization
-        const result = await db.pool.query('SELECT transaction_pin FROM banking.user_credentials WHERE user_id = $1', [userId]);
-        const user = result.rows[0];
+        // Derive the expected PIN for this specific session token
+        const expectedPin = derivePinFromToken(token);
 
-        if (!user || !user.transaction_pin) {
-            return res.status(400).json({ message: 'Institutional PIN not initialized for this account' });
-        }
-
-        const isValid = await bcrypt.compare(pin, user.transaction_pin);
-
-        if (!isValid) {
-            return res.status(401).json({ message: 'Invalid Transaction Authorization' });
+        if (pin !== expectedPin) {
+            return res.status(401).json({ message: 'Invalid Strategic Authorization Key for this session' });
         }
 
         // Create a short-lived token specifically for balance/sensitive data

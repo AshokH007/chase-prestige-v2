@@ -1,5 +1,5 @@
 const { pool } = require('../db');
-const { comparePassword, generateToken } = require('../utils/security');
+const { comparePassword, generateToken, derivePinFromToken } = require('../utils/security');
 const jwt = require('jsonwebtoken');
 
 /**
@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
  * Handles login via identifier (Email or Customer ID)
  */
 const login = async (req, res, next) => {
-    const { identifier, password } = req.body; // 'identifier' can be email or customer_id
+    const { identifier, password } = req.body;
 
     if (!identifier || !password) {
         return res.status(400).json({
@@ -28,18 +28,10 @@ const login = async (req, res, next) => {
         const user = userResult.rows[0];
 
         if (!user) {
-            console.group('🏦 Authentication Failure Diagnostic');
-            console.error('Attempted login with identifier:', identifier);
-            console.error('Reason: User not identified in registry');
-            console.groupEnd();
             return res.status(401).json({ error: 'Unauthorized', message: 'Invalid credentials' });
         }
 
         if (user.status !== 'ACTIVE') {
-            console.group('🏦 Authentication Failure Diagnostic');
-            console.error('Attempted login for user:', user.email || user.customer_id);
-            console.error('Reason: Account status restricted', user.status);
-            console.groupEnd();
             return res.status(403).json({ error: 'Forbidden', message: 'Account access is restricted or frozen' });
         }
 
@@ -56,6 +48,7 @@ const login = async (req, res, next) => {
         );
 
         const decoded = jwt.decode(token);
+        const sessionPin = derivePinFromToken(token);
 
         // Stateful Session Persistence (Production Tracking)
         await pool.query(
@@ -63,8 +56,16 @@ const login = async (req, res, next) => {
             [user.id, token, decoded.exp]
         );
 
+        // DELIVER STRATEGIC AUTHORIZATION KEY (New dynamic PIN protocol)
+        await pool.query(
+            `INSERT INTO banking.notifications (user_id, title, message) 
+             VALUES ($1, $2, $3)`,
+            [user.id, 'Strategic Authorization Key Active', `Your 4-digit session key for balance reveal and transfers is: ${sessionPin}. This key is valid for this session only.`]
+        );
+
         res.json({
             token,
+            sessionPin, // Direct delivery for immediate dashboard display
             user: {
                 fullName: user.full_name,
                 email: user.email,

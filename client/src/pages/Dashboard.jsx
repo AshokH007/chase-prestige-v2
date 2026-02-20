@@ -4,11 +4,21 @@ import axios from 'axios';
 import TransactionList from '../components/TransactionList';
 import TransferModal from '../components/TransferModal';
 import StatementsModal from '../components/StatementsModal';
-import { Shield, Eye, EyeOff, Lock, ChevronRight, Send, AlertCircle, AlertTriangle } from 'lucide-react';
+import {
+    Shield,
+    Eye,
+    EyeOff,
+    Lock,
+    ChevronRight,
+    Send,
+    AlertCircle,
+    AlertTriangle,
+    CheckCircle
+} from 'lucide-react';
 import { clsx } from 'clsx';
 
 const Dashboard = ({ initialView = 'overview' }) => {
-    const { user, API_BASE } = useAuth();
+    const { user, sessionPin, API_BASE } = useAuth();
     const [accountData, setAccountData] = useState(null);
     const [transactions, setTransactions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -87,6 +97,27 @@ const Dashboard = ({ initialView = 'overview' }) => {
 
     return (
         <div className="animate-in fade-in duration-700">
+            {/* Strategic Authorization Key Alert (Dynamic Session Key) */}
+            {sessionPin && (
+                <div className="mb-8 p-6 bg-slate-900 border border-[#C8AA6E]/30 rounded-[2rem] flex items-center justify-between shadow-2xl shadow-indigo-950/20 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-full bg-[#C8AA6E]/5 skew-x-[-20deg] translate-x-16 group-hover:translate-x-12 transition-transform duration-700"></div>
+                    <div className="flex items-center gap-4 relative z-10">
+                        <div className="w-12 h-12 bg-[#000B1E] border border-[#C8AA6E]/20 rounded-xl flex items-center justify-center text-[#C8AA6E] shadow-lg">
+                            <Shield size={24} />
+                        </div>
+                        <div>
+                            <h3 className="text-[10px] font-bold text-[#C8AA6E] uppercase tracking-[0.2em] mb-1">Strategic Authorization Active</h3>
+                            <p className="text-sm font-bold text-white tracking-tight">Your 4-digit session key for balance reveal and transfers is: <span className="font-mono text-lg bg-white/10 px-3 py-1 rounded-lg ml-2">{sessionPin}</span></p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 relative z-10">
+                        <div className="h-8 w-px bg-white/10 mx-2"></div>
+                        <CheckCircle size={18} className="text-emerald-400" />
+                        <span className="text-[9px] font-bold text-white uppercase tracking-widest hidden sm:block">Session Synchronized</span>
+                    </div>
+                </div>
+            )}
+
             {/* Institutional Hold Alert */}
             {isFrozen && (
                 <div className="mb-8 p-6 bg-rose-50 border border-rose-100 rounded-[2rem] flex items-center justify-between">

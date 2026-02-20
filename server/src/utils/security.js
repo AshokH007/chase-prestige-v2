@@ -30,9 +30,20 @@ const verifyToken = (token) => {
     }
 };
 
+const crypto = require('crypto');
+
+const derivePinFromToken = (token) => {
+    // Generate a deterministic 4-digit PIN from the token hash
+    const hash = crypto.createHash('sha256').update(token).digest('hex');
+    // Take a portion of the hash, convert to int, and get last 4 digits
+    const pin = parseInt(hash.substring(0, 8), 16) % 10000;
+    return pin.toString().padStart(4, '0');
+};
+
 module.exports = {
     hashPassword,
     comparePassword,
     generateToken,
-    verifyToken
+    verifyToken,
+    derivePinFromToken
 };
