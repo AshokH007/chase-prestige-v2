@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+const BUILD_VERSION = "2.5.1"; // CACHE BUSTER
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import TransactionList from '../components/TransactionList';
@@ -204,6 +205,8 @@ const Dashboard = ({ initialView = 'overview' }) => {
                                             <span className="text-7xl font-bold tracking-tighter font-['Playfair_Display'] block min-w-[300px]">
                                                 {isBalanceVisible && accountBalance !== undefined ? (
                                                     parseFloat(accountBalance).toLocaleString(undefined, { minimumFractionDigits: 2 })
+                                                ) : isBalanceVisible ? (
+                                                    "0.00" // Standard fallback, never show 'Hydrating'
                                                 ) : (
                                                     "••••••"
                                                 )}
