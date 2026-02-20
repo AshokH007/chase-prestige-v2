@@ -1,16 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap');
-@config "../tailwind.config.js";
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
 
-:root {
-  --prestige-navy: #000B1E;
-  --prestige-navy-light: #00163A;
-  --prestige-gold: #C8AA6E;
-  --prestige-gold-light: #D4C094;
-  --prestige-pearl: #F9FAFB;
-  --prestige-slate: #4B5563;
+@theme {
+  --color-prestige-navy: #000B1E;
+  --color-prestige-navy-light: #00163A;
+  --color-prestige-gold: #C8AA6E;
+  --color-prestige-gold-light: #D4C094;
+  --color-prestige-pearl: #F9FAFB;
+  --color-prestige-slate: #4B5563;
+
+  --font-sans: Inter, sans-serif;
+  --font-serif: "Playfair Display", serif;
 }
 
 @layer base {
