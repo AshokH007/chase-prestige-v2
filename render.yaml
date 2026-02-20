@@ -1,7 +1,7 @@
 services:
-  # 1. Backend API Service
+  # 1. Backend API Service (Chase Prestige V2 Core)
   - type: web
-    name: banking-platform-simulation
+    name: chase-prestige-api-v2
     plan: free
     runtime: node
     buildCommand: npm install
@@ -14,16 +14,16 @@ services:
       - key: NODE_ENV
         value: production
       - key: FRONTEND_URL
-        value: https://banking-platform-ui.onrender.com
+        value: https://chase-prestige-ui-v2.onrender.com
       - key: TOKEN_EXPIRY
         value: 30m
       - key: NODE_VERSION
         value: 20
     rootDir: server
 
-  # 2. Frontend Static Site
+  # 2. Frontend Static Site (Chase Prestige V2 Interface)
   - type: web
-    name: banking-platform-ui
+    name: chase-prestige-ui-v2
     env: static
     buildCommand: npm install && npm run build
     staticPublishPath: dist
@@ -33,7 +33,7 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        value: https://banking-platform-simulation.onrender.com
+        value: https://chase-prestige-api-v2.onrender.com
       - key: NODE_VERSION
         value: 20
     rootDir: client

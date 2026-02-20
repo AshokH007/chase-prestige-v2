@@ -1,65 +1,36 @@
-# B2C Digital Banking Platform Simulation
+# Chase Prestige: Advanced Banking Ecosystem V2
 
 ## Overview
-A production-hardened B2C consumer banking web platform simulation designed for security, auditability, and data isolation. This project demonstrates high-fidelity Fintech engineering standards, utilizing a shared database infrastructure with strict schema isolation.
+A high-fidelity, production-hardened Fintech ecosystem designed for institutional-grade security and performance. This V2 release features the **Institutional Oracle** (Staff AI) and a **De-coupled Auth Architecture** for maximum horizontal scalability and data protection.
 
-## Core Principles
-- **No Self-Registration**: Customer onboarding is a controlled internal process. No public signup interfaces are exposed to the internet.
-- **Identity Isolation**: All sensitive data is derived exclusively from cryptographic JWT claims.
-- **Stateful Session Control**: JWTs are short-lived (30 minutes) and backed by a database revocation layer for immediate session termination.
+## Core Pillars
+- **Zero-Trust Onboarding**: Controlled internal provisioning of identities.
+- **Tiered Credential Silos**: Passwords and PINs are segregated from profile data in dedicated, hardened tables.
+- **Institutional AI**: Sovereign analytical core for staff oversight and client concierge services.
+- **Stateful JWT Enforcement**: 30-minute session windows with real-time database-backed revocation.
 
-## System Architecture
+## Deployment & Production Setup
 
-### 1. Database & Schema
-The platform operates on a dedicated `banking` schema within a shared PostgreSQL database.
-- **Schema**: `banking`
-- **Isolation**: Strictly isolated from other system tables.
-- **Security**: Enforced SSL and parameterized queries.
+### 1. Strategic Infrastructure
+- Managed PostgreSQL (e.g., Aiven) with `banking` schema isolation.
+- Global CDN for frontend delivery.
 
-### 2. Onboarding Workflow
-New customers are provisioned via internal security tools.
-- **Bank-Issued Identifiers**: Immutable `customer_id` and `account_number` are generated upon provisioning.
-- **Credential Storage**: Bcrypt (rounds: 12) hashing for data-at-rest protection.
+### 2. Zero-Touch Deployment (Render Blueprints)
+This project includes a `render.yaml` Blueprint. To deploy both the API and UI in one click:
+1. Connect this repository to **Render.com**.
+2. Render will automatically detect the Blueprint and provision the **Chase Prestige API V2** and **Chase Prestige Interface V2**.
 
-### 3. Authentication Protocol
-- **Method**: Bearer JWT.
-- **Revocation Model**: Stateful tracking in `banking.auth_tokens`.
-- **Validation Pipeline**:
-  1. Header Parsing
-  2. Signature Verification
-  3. Database Revocation Status Check
-  4. Expiry Validation
+### 3. Environment Variables
+Ensure the following variables are configured for the respective services:
 
-## API Specifications
+#### API Service (Backend)
+- `DATABASE_URL`: Aiven PostgreSQL URI.
+- `JWT_SECRET`: High-entropy cryptographic key.
+- `FRONTEND_URL`: URL of the deployed UI (e.g., `https://chase-prestige-ui-v2.onrender.com`).
+- `NODE_ENV`: `production`
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| POST | `/api/auth/login` | Authenticate via email/customer_id |
-| POST | `/api/auth/logout` | Terminate session and revoke token |
-| GET | `/api/account/profile` | Retrieve authenticated identity |
-| GET | `/api/account/balance` | Retrieve real-time account ledger |
-
-## Deployment & Setup
-
-### 1. Database Infrastructure
-- Provision Managed PostgreSQL (e.g., Aiven).
-- Apply `schema.sql` to initialize the `banking` namespace.
-
-### 2. Backend Deployment (Render.com)
-1. **Connect Repository**: Point Render to your GitHub repo.
-2. **Root Directory**: `server`
-3. **Build Command**: `npm install`
-4. **Start Command**: `npm start`
-5. **Environment Variables**:
-   - `DATABASE_URL`: Connection string.
-   - `JWT_SECRET`: Random 256-bit key.
-   - `FRONTEND_URL`: URL of your deployed frontend.
-
-### 3. Frontend Deployment (Vercel/Netlify)
-1. **Root Directory**: `client`
-2. **Build Command**: `npm run build`
-3. **Environment Variables**:
-   - `VITE_API_URL`: The URL of your live Render backend.
+#### Interface Service (Frontend)
+- `VITE_API_URL`: URL of the deployed API (e.g., `https://chase-prestige-api-v2.onrender.com`).
 
 ---
-© 2026 FinTech Solutions Corp. Professional Internal Build.
+© 2026 Chase Prestige Institutional Builds.
