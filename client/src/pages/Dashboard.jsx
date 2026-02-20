@@ -202,15 +202,8 @@ const Dashboard = ({ initialView = 'overview' }) => {
                                         <div className="flex items-baseline gap-3 group/balance relative">
                                             <span className="text-3xl text-[#C8AA6E] font-light font-['Playfair_Display']">$</span>
                                             <span className="text-7xl font-bold tracking-tighter font-['Playfair_Display'] block min-w-[300px]">
-                                                {isBalanceVisible ? (
-                                                    accountBalance !== undefined ? (
-                                                        parseFloat(accountBalance).toLocaleString(undefined, { minimumFractionDigits: 2 })
-                                                    ) : (
-                                                        <span className="flex items-center gap-2">
-                                                            <div className="w-8 h-8 border-2 border-[#C8AA6E] border-t-transparent rounded-full animate-spin"></div>
-                                                            <span className="text-3xl opacity-50 uppercase tracking-widest">Hydrating...</span>
-                                                        </span>
-                                                    )
+                                                {isBalanceVisible && accountBalance !== undefined ? (
+                                                    parseFloat(accountBalance).toLocaleString(undefined, { minimumFractionDigits: 2 })
                                                 ) : (
                                                     "••••••"
                                                 )}
@@ -341,7 +334,18 @@ const Dashboard = ({ initialView = 'overview' }) => {
                             {pinError && <p className="text-rose-500 text-[10px] font-bold uppercase tracking-widest">{pinError}</p>}
                             <div className="flex gap-4">
                                 <button type="button" onClick={() => setIsVerifyingPin(false)} className="flex-1 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">Cancel</button>
-                                <button type="submit" className="flex-[2] py-4 bg-[#000B1E] text-white rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-indigo-900/20">Verify Identity</button>
+                                <button
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className="flex-[2] py-4 bg-[#000B1E] text-white rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-indigo-900/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin"></div>
+                                            Authorizing...
+                                        </>
+                                    ) : 'Verify Identity'}
+                                </button>
                             </div>
                         </form>
                     </div>
