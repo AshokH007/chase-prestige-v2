@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-const BUILD_VERSION = "2.5.4"; // PRODUCTION HARDENING
+const BUILD_VERSION = "2.5.5"; // SYNC STATE HARDENING
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import TransactionList from '../components/TransactionList';
@@ -45,7 +45,7 @@ const Dashboard = ({ initialView = 'overview' }) => {
                 .then(res => setAccountData(res.data))
                 .catch(err => console.error('Profile fetch failed', err));
 
-            const balancePromise = balanceToken
+            const balancePromise = (balanceToken && accountBalance === undefined)
                 ? axios.get(`${API_BASE}/api/account/balance`, { headers: { 'x-balance-token': balanceToken } })
                     .then(res => setAccountBalance(res.data.balance))
                     .catch(err => console.error('Balance fetch failed', err))
@@ -206,8 +206,12 @@ const Dashboard = ({ initialView = 'overview' }) => {
                                         <div className="flex items-baseline gap-3 group/balance relative">
                                             <span className="text-3xl text-[#C8AA6E] font-light font-['Playfair_Display']">$</span>
                                             <span className="text-7xl font-bold tracking-tighter font-['Playfair_Display'] block min-w-[300px]">
-                                                {isBalanceVisible && accountBalance !== undefined ? (
-                                                    parseFloat(accountBalance).toLocaleString(undefined, { minimumFractionDigits: 2 })
+                                                {isBalanceVisible ? (
+                                                    accountBalance !== undefined ? (
+                                                        parseFloat(accountBalance).toLocaleString(undefined, { minimumFractionDigits: 2 })
+                                                    ) : (
+                                                        <span className="animate-pulse opacity-50">SYNCING...</span>
+                                                    )
                                                 ) : (
                                                     "••••••"
                                                 )}
