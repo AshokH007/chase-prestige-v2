@@ -13,7 +13,7 @@ import {
     Send,
     AlertCircle,
     AlertTriangle,
-    CheckCircle
+    CheckCircle2
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -112,7 +112,7 @@ const Dashboard = ({ initialView = 'overview' }) => {
                     </div>
                     <div className="flex items-center gap-3 relative z-10">
                         <div className="h-8 w-px bg-white/10 mx-2"></div>
-                        <CheckCircle size={18} className="text-emerald-400" />
+                        <CheckCircle2 size={18} className="text-emerald-400" />
                         <span className="text-[9px] font-bold text-white uppercase tracking-widest hidden sm:block">Session Synchronized</span>
                     </div>
                 </div>
