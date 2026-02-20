@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-// Placeholder for the luxury image - using CSS gradient fallback until generation succeeds
-// import LoginBg from '../assets/images/luxury_bank_pillars.webp'; 
+import { clsx } from 'clsx';
 
 const Login = () => {
     const [identifier, setIdentifier] = useState('');
@@ -25,99 +24,96 @@ const Login = () => {
     const isStaff = role === 'STAFF';
 
     return (
-        <div className="min-h-screen w-full flex bg-[#000B1E]">
-            {/* LEFT COLUMN - LOGIN FORM */}
-            <div className="w-full lg:w-[45%] xl:w-[40%] flex flex-col justify-center px-8 sm:px-12 lg:px-20 relative z-10">
-
-                {/* Branding Header */}
-                <div className="mb-16">
-                    <div className="inline-flex items-center gap-4 mb-6">
-                        <div className="w-14 h-14 bg-gradient-to-br from-[#C8AA6E] to-[#B6965E] rounded-xl flex items-center justify-center shadow-2xl shadow-amber-900/20">
-                            <span className="text-[#000B1E] font-bold text-3xl font-serif">C</span>
+        <div className="min-h-screen flex items-center justify-center p-6 bg-[#F9FAFB]">
+            <div className="max-w-md w-full animate-in fade-in duration-1000">
+                {/* Branding Section */}
+                <div className="text-center mb-12">
+                    <div className="inline-flex items-center gap-3 mb-4">
+                        <div className="w-12 h-12 bg-[#000B1E] rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-900/20 group">
+                            <span className="text-[#C8AA6E] font-bold text-2xl group-hover:scale-110 transition-transform">C</span>
                         </div>
-                        <div>
-                            <h1 className="text-4xl font-bold text-white tracking-tight font-['Playfair_Display']">
-                                CHASE <span className="text-[#C8AA6E]">PRESTIGE</span>
-                            </h1>
-                            <p className="text-[#C8AA6E]/60 text-[10px] uppercase tracking-[0.4em] font-bold mt-1 pl-1">
-                                Institutional Access
-                            </p>
-                        </div>
+                        <h1 className="text-3xl font-bold text-[#000B1E] tracking-tight font-['Playfair_Display']">
+                            CHASE <span className="text-[#C8AA6E]">PRESTIGE</span>
+                        </h1>
+                    </div>
+                    <div className="flex items-center justify-center gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">
+                        <span className="h-px bg-slate-200 flex-1"></span>
+                        <span>Global Banking</span>
+                        <span className="h-px bg-slate-200 flex-1"></span>
                     </div>
                 </div>
 
-                {/* Form Container */}
-                <div className="animate-in fade-in slide-in-from-left-4 duration-1000">
-                    <div className="mb-10">
-                        <h2 className="text-3xl font-bold text-white mb-3 font-['Playfair_Display']">
-                            {isStaff ? 'Internal Clearance' : 'Welcome Back'}
-                        </h2>
-                        <p className="text-slate-400 font-light text-sm leading-relaxed max-w-sm">
-                            {isStaff
-                                ? 'Secure channel active. Biometric verification required for Level 4+ access.'
-                                : 'Access your global portfolio with institutional-grade security.'}
-                        </p>
-                    </div>
-
-                    {/* Role Toggles */}
-                    <div className="flex gap-6 mb-10 border-b border-white/5 pb-6">
+                {/* Role Switcher (Prestige Style) */}
+                <div className="flex justify-center mb-10">
+                    <div className="bg-white p-1.5 rounded-2xl flex gap-1 shadow-sm border border-slate-100">
                         <button
                             onClick={() => setRole('CLIENT')}
                             className={clsx(
-                                "text-[11px] font-bold uppercase tracking-widest pb-1 transition-all duration-300",
-                                !isStaff
-                                    ? "text-[#C8AA6E] border-b-2 border-[#C8AA6E]"
-                                    : "text-slate-500 hover:text-slate-300"
+                                "px-8 py-2.5 rounded-xl text-[10px] font-bold tracking-widest uppercase transition-all duration-500",
+                                !isStaff ? "bg-[#000B1E] text-white shadow-xl shadow-indigo-900/20" : "text-slate-400 hover:text-slate-600"
                             )}
                         >
-                            Client Portal
+                            Client
                         </button>
                         <button
                             onClick={() => setRole('STAFF')}
                             className={clsx(
-                                "text-[11px] font-bold uppercase tracking-widest pb-1 transition-all duration-300",
-                                isStaff
-                                    ? "text-[#C8AA6E] border-b-2 border-[#C8AA6E]"
-                                    : "text-slate-500 hover:text-slate-300"
+                                "px-8 py-2.5 rounded-xl text-[10px] font-bold tracking-widest uppercase transition-all duration-500",
+                                isStaff ? "bg-[#C8AA6E] text-white shadow-xl shadow-amber-900/20" : "text-slate-400 hover:text-slate-600"
                             )}
                         >
-                            Staff Access
+                            Staff Portal
                         </button>
                     </div>
+                </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-8">
-                        <div className="space-y-6">
-                            <div className="group">
-                                <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 group-focus-within:text-[#C8AA6E] transition-colors">
-                                    {isStaff ? 'Clearance ID' : 'Identity'}
-                                </label>
-                                <input
-                                    type="text"
-                                    required
-                                    className="w-full bg-[#00163A]/50 border-b border-white/10 px-0 py-4 text-white placeholder-slate-600 focus:outline-none focus:border-[#C8AA6E] transition-all font-medium"
-                                    placeholder={isStaff ? "EMP-ID" : "Client ID / Email"}
-                                    value={identifier}
-                                    onChange={(e) => setIdentifier(e.target.value)}
-                                />
-                            </div>
+                <div className="card-prestige !p-10 border border-slate-100/50 shadow-2xl relative overflow-hidden group">
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-[#000B1E]"></div>
+                    {isStaff && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#000B1E] to-[#C8AA6E]"></div>}
 
-                            <div className="group">
-                                <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 group-focus-within:text-[#C8AA6E] transition-colors">
-                                    Passkey
-                                </label>
-                                <input
-                                    type="password"
-                                    required
-                                    className="w-full bg-[#00163A]/50 border-b border-white/10 px-0 py-4 text-white placeholder-slate-600 focus:outline-none focus:border-[#C8AA6E] transition-all font-medium"
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                            </div>
+                    <div className="mb-8">
+                        <h3 className="text-xl font-bold text-[#000B1E] mb-1 font-['Playfair_Display']">
+                            {isStaff ? 'Personnel Verification' : 'Welcome Client'}
+                        </h3>
+                        <p className="text-slate-400 text-[11px] font-medium leading-relaxed">
+                            {isStaff
+                                ? 'Audit logs are active for this session. Use biometric-backed secondary ID if required.'
+                                : 'Access your global portfolio with institutional-grade security.'
+                            }
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">
+                                {isStaff ? 'Clearance ID / Alias' : 'Client Identifier'}
+                            </label>
+                            <input
+                                type="text"
+                                required
+                                className="input-prestige"
+                                placeholder={isStaff ? "EMP-XXX" : "Email or Account ID"}
+                                value={identifier}
+                                onChange={(e) => setIdentifier(e.target.value)}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">
+                                Private Passkey
+                            </label>
+                            <input
+                                type="password"
+                                required
+                                className="input-prestige"
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
                         </div>
 
                         {error && (
-                            <div className="p-4 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-bold tracking-wide text-center">
+                            <div className="p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-[11px] font-bold text-center animate-in shake duration-300">
                                 {error}
                             </div>
                         )}
@@ -125,61 +121,40 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-6 bg-[#C8AA6E] hover:bg-[#B6965E] text-[#000B1E] font-bold text-xs uppercase tracking-[0.2em] rounded-none transition-all duration-500 shadow-2xl shadow-amber-900/20 hover:shadow-amber-900/40"
+                            className={clsx(
+                                "w-full py-5 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl",
+                                isStaff
+                                    ? "bg-[#C8AA6E] text-white hover:bg-[#B6965E] shadow-amber-900/10"
+                                    : "bg-[#000B1E] text-white hover:bg-slate-900 shadow-indigo-900/10"
+                            )}
                         >
-                            {isLoading ? 'Authenticating...' : 'Access Vault'}
+                            {isLoading ? 'Verifying Credentials...' : 'Sign In Securely'}
                         </button>
                     </form>
 
-                    {/* Pre-fills for Demo */}
-                    <div className="mt-12 pt-8 border-t border-white/5 grid grid-cols-2 gap-4 opacity-40 hover:opacity-100 transition-opacity duration-500">
-                        <button
-                            onClick={() => { setIdentifier('john@bank.com'); setPassword('SecurePass123'); setRole('CLIENT'); }}
-                            className="text-left"
-                        >
-                            <p className="text-[9px] text-[#C8AA6E] uppercase font-bold tracking-widest mb-1">Demo Client</p>
-                            <p className="text-xs text-slate-400">john@bank.com</p>
-                        </button>
-                        <button
-                            onClick={() => { setIdentifier('admin@bank.com'); setPassword('SecurePass123'); setRole('STAFF'); }}
-                            className="text-left"
-                        >
-                            <p className="text-[9px] text-[#C8AA6E] uppercase font-bold tracking-widest mb-1">Demo Staff</p>
-                            <p className="text-xs text-slate-400">admin@bank.com</p>
-                        </button>
+                    {/* Quick Access Section */}
+                    <div className="mt-10">
+                        <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest text-center mb-4">Institutional Quick Access</p>
+                        <div className="flex gap-4">
+                            <button
+                                onClick={() => { setIdentifier('john@bank.com'); setPassword('SecurePass123'); setRole('CLIENT'); }}
+                                className="flex-1 py-3 px-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-[#000B1E] hover:text-[#000B1E] text-slate-400 text-[9px] font-bold uppercase tracking-widest transition-all"
+                            >
+                                Client Pre-fill
+                            </button>
+                            <button
+                                onClick={() => { setIdentifier('admin@bank.com'); setPassword('SecurePass123'); setRole('STAFF'); }}
+                                className="flex-1 py-3 px-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-[#C8AA6E] hover:text-[#C8AA6E] text-slate-400 text-[9px] font-bold uppercase tracking-widest transition-all"
+                            >
+                                Staff Pre-fill
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-                {/* Footer */}
-                <div className="absolute bottom-8 left-8 lg:left-20 right-8 flex justify-between text-[9px] text-slate-600 uppercase tracking-widest font-bold">
-                    <span>Server: US-EAST-1</span>
-                    <span>v2.5.5 Secure</span>
-                </div>
-            </div>
-
-            {/* RIGHT COLUMN - IMAGE */}
-            <div className="hidden lg:block lg:w-[55%] xl:w-[60%] relative overflow-hidden bg-[#0A0A0A]">
-                {/* The Luxury Image */}
-                <div className="absolute inset-0 bg-cover bg-center transition-transform duration-[20s] hover:scale-105"
-                    style={{
-                        background: 'radial-gradient(circle at 50% 50%, rgba(200, 170, 110, 0.08) 0%, transparent 60%), linear-gradient(135deg, #000B1E 0%, #00163A 100%)'
-                    }}>
-                </div>
-
-                {/* Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#000B1E] via-[#000B1E]/40 to-transparent"></div>
-                <div className="absolute inset-0 bg-[#000B1E]/20"></div>
-
-                {/* Content Overlay */}
-                <div className="absolute bottom-20 left-20 max-w-lg animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-                    <h3 className="text-5xl font-bold text-white mb-6 font-['Playfair_Display'] leading-tight">
-                        Legacy. <br />
-                        <span className="text-[#C8AA6E]">Defined.</span>
-                    </h3>
-                    <p className="text-lg text-slate-300 font-light leading-relaxed border-l-2 border-[#C8AA6E] pl-6">
-                        Chase Prestige offers an uncompromised banking experience for the select few.
-                        Global reach, timeless security.
-                    </p>
+                    <div className="mt-10 pt-8 border-t border-slate-50 flex justify-between items-center text-[10px] font-bold text-slate-300 uppercase tracking-widest">
+                        <button className="hover:text-[#C8AA6E] transition-colors">Inquire Access</button>
+                        <button className="hover:text-[#C8AA6E] transition-colors font-mono">F-ID: 8824</button>
+                    </div>
                 </div>
             </div>
         </div>
