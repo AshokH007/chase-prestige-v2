@@ -12,8 +12,8 @@ exports.chat = async (req, res, next) => {
         return res.status(400).json({ error: 'Bad Request', message: 'Message content is required.' });
     }
 
-    // OPTIMIZATION: Using a more stable model ID on the router.
-    const MODEL_ID = process.env.AI_MODEL_ID || "mistralai/Mistral-7B-Instruct-v0.3";
+    // OPTIMIZATION: Reverting to Zephyr for backend reliability.
+    const MODEL_ID = process.env.AI_MODEL_ID || "HuggingFaceH4/zephyr-7b-beta";
     const HF_TOKEN = process.env.HF_TOKEN;
 
     if (!HF_TOKEN) {
@@ -33,7 +33,7 @@ exports.chat = async (req, res, next) => {
             {
                 model: MODEL_ID,
                 messages: [
-                    { role: "system", content: "You are the Chase Prestige Oracle. Respond professionally, intelligently, and extremely concisely. Prioritize speed and directness. DO NOT include internal thinking." },
+                    { role: "system", content: "You are the Chase Prestige Oracle, a premium banking assistant. Respond intelligently and professionally. Keep responses concise but complete. Do not include internal thought blocks in your final output." },
                     { role: "user", content: message.trim() }
                 ],
                 max_tokens: 500,
@@ -58,8 +58,11 @@ exports.chat = async (req, res, next) => {
 
             console.log(`📝 Raw AI Response (Length: ${aiReply.length})`);
 
-            // STRIP INTERNAL THINKING BLOCKS (e.g. <think>...</think> or unclosed <think>...)
-            aiReply = aiReply.replace(/<think>[\s\S]*?(?:<\/think>|$)/gi, "").trim();
+            // STRIP INTERNAL THINKING BLOCKS SAFELY
+            // 1. Remove closed blocks
+            aiReply = aiReply.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+            // 2. Remove trailing unclosed tags (occurs if response is truncated)
+            aiReply = aiReply.replace(/<think>[\s\S]*$/gi, "").trim();
 
             if (!aiReply) {
                 console.warn('⚠️ Cleaned AI reply is empty after stripping <think> tags.');
