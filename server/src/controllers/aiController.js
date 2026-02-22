@@ -24,10 +24,12 @@ exports.chat = async (req, res, next) => {
         const hfResponse = await axios.post(
             `https://api-inference.huggingface.co/models/${MODEL_ID}`,
             {
-                inputs: `<|system|>\nYou are a helpful financial assistant.\n<|user|>\n${message.trim()}\n<|assistant|>\n`,
+                inputs: `<|system|>\nYou are the Chase Prestige Oracle, a world-class AI financial advisor. Your tone is sophisticated, intelligent, and extremely helpful. Talk like a human expert, not a robot. Provide clear, direct, and insightful answers.\n<|user|>\n${message.trim()}\n<|assistant|>\n`,
                 parameters: {
-                    max_new_tokens: 200,
+                    max_new_tokens: 500,
                     temperature: 0.7,
+                    top_p: 0.95,
+                    repetition_penalty: 1.1,
                     return_full_text: false
                 }
             },
@@ -36,13 +38,16 @@ exports.chat = async (req, res, next) => {
                     'Authorization': `Bearer ${HF_TOKEN}`,
                     'Content-Type': 'application/json'
                 },
-                timeout: 20000 // 20s timeout protection
+                timeout: 30000 // 30s timeout for complex reasoning
             }
         );
 
         // Handle model loading state
         if (hfResponse.data.error && hfResponse.data.error.includes("loading")) {
-            return res.status(503).json({ error: 'Service Unavailable', message: 'Model is currently loading. Please retry in 30 seconds.' });
+            return res.status(503).json({
+                error: 'Service Unavailable',
+                message: 'The Oracle is currently synchronizing with global markets. Please retry in a moment.'
+            });
         }
 
         let aiText = "";
@@ -51,7 +56,7 @@ exports.chat = async (req, res, next) => {
         } else if (hfResponse.data.generated_text) {
             aiText = hfResponse.data.generated_text;
         } else {
-            aiText = "I am currently unable to process your request.";
+            aiText = "I am currently analyzing your inquiry. Please allow me a moment to recalibrate.";
         }
 
         // 3. CLEAN RESPONSE
@@ -61,8 +66,18 @@ exports.chat = async (req, res, next) => {
 
     } catch (error) {
         console.error('[AI Controller Error]:', error.response?.data || error.message);
-        const status = error.response?.status || 500;
-        const msg = error.response?.data?.error || 'Failed to connect to AI engine.';
-        res.status(status).json({ error: 'Inference Error', message: msg });
+
+        // Return a slightly more natural fallback for common Hugging Face errors
+        if (error.response?.status === 503 || error.response?.data?.error?.includes("loading")) {
+            return res.status(503).json({
+                error: 'Service Unavailable',
+                message: 'The Oracle is currently deep in market analysis. Please try your inquiry again in 20-30 seconds.'
+            });
+        }
+
+        res.status(500).json({
+            error: 'Inference Error',
+            message: 'My institutional relay is experiencing high latency. Please try again.'
+        });
     }
 };

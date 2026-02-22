@@ -164,7 +164,7 @@ const AIConcierge = () => {
                     <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#C8AA6E]/5 rounded-full blur-[80px] -ml-40 -mb-40 opacity-30 pointer-events-none"></div>
 
                     {/* Messages Area */}
-                    <div className="flex-1 overflow-y-auto p-8 lg:p-14 space-y-12 custom-scrollbar relative z-10">
+                    <div className="flex-1 overflow-y-auto p-8 lg:p-14 space-y-12 custom-scrollbar relative z-10 scroll-smooth pb-32 lg:pb-40">
                         {messages.map((msg, idx) => (
                             <div key={idx} className={clsx("flex gap-6 animate-in slide-in-from-bottom-4 duration-500", msg.role === 'user' ? 'flex-row-reverse' : '')}>
                                 <div className={clsx(
