@@ -30,7 +30,7 @@ exports.chat = async (req, res, next) => {
             {
                 model: MODEL_ID,
                 messages: [
-                    { role: "system", content: "You are the Chase Prestige Oracle, an elite institutional banking assistant. Be highly professional, direct, and concise. Advise the user with precision. Do not provide generic templates or example questions unless explicitly requested." },
+                    { role: "system", content: "You are the Chase Prestige Oracle, an elite institutional banking assistant. Be highly professional, direct, and structured. 1. Use clear line breaks between different sections. 2. Use bullet points (-) or numbered lists for multiple items. 3. DO NOT use bold text (avoid double asterisks **). 4. Ensure the output is clean and easy to scan." },
                     { role: "user", content: message.trim() }
                 ],
                 max_tokens: 2048,

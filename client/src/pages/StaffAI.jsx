@@ -133,7 +133,7 @@ const StaffAI = () => {
                                 msg.role === 'user' ? "items-end" : "items-start"
                             )}>
                                 <div className={clsx(
-                                    "p-6 lg:p-7 rounded-2xl text-[15px] leading-relaxed transition-all duration-300",
+                                    "p-6 lg:p-7 rounded-2xl text-[15px] leading-relaxed transition-all duration-300 whitespace-pre-wrap",
                                     msg.role === 'bot'
                                         ? "bg-white text-slate-800 rounded-tl-none font-medium border border-black/[0.03] shadow-[0_4px_12px_-4px_rgba(0,0,0,0.03)]"
                                         : "bg-[#F2EDE4] text-slate-800 rounded-tr-none font-semibold shadow-[0_4px_12px_-4px_rgba(200,170,110,0.1)]"
