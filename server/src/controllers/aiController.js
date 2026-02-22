@@ -12,8 +12,8 @@ exports.chat = async (req, res, next) => {
         return res.status(400).json({ error: 'Bad Request', message: 'Message content is required.' });
     }
 
-    // OPTIMIZATION: Append :fastest to use the lowest latency provider available on the router
-    const MODEL_ID = (process.env.AI_MODEL_ID || "HuggingFaceH4/zephyr-7b-beta") + ":fastest";
+    // OPTIMIZATION: Using the standard model ID. (Removed :fastest to rule out auth syntax issues)
+    const MODEL_ID = process.env.AI_MODEL_ID || "HuggingFaceH4/zephyr-7b-beta";
     const HF_TOKEN = process.env.HF_TOKEN;
 
     if (!HF_TOKEN) {
