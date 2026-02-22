@@ -29,7 +29,7 @@ exports.chat = async (req, res, next) => {
             {
                 model: MODEL_ID,
                 messages: [
-                    { role: "system", content: "You are the Chase Prestige Oracle. Respond professionally and concisely. Avoid robotic AI archetypes." },
+                    { role: "system", content: "You are the Chase Prestige Oracle. Respond professionally and concisely. DO NOT include internal thinking or process notes in your output. Provide only the final response." },
                     { role: "user", content: message.trim() }
                 ],
                 max_tokens: 500,
@@ -48,9 +48,13 @@ exports.chat = async (req, res, next) => {
 
         console.log(`✅ HF Router Response Received: Status=${hfResponse.status}`);
 
-        // 3. PARSE OPENAI-STYLE RESPONSE
+        // 3. PARSE & CLEAN OPENAI-STYLE RESPONSE
         if (hfResponse.data && hfResponse.data.choices && hfResponse.data.choices.length > 0) {
-            const aiReply = hfResponse.data.choices[0].message.content;
+            let aiReply = hfResponse.data.choices[0].message.content;
+
+            // STRIP INTERNAL THINKING BLOCKS (e.g. <think>...</think>)
+            aiReply = aiReply.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+
             res.json({ response: aiReply });
         } else {
             console.error('❌ Unexpected Router Response Format:', hfResponse.data);
