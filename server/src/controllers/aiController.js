@@ -12,7 +12,8 @@ exports.chat = async (req, res, next) => {
         return res.status(400).json({ error: 'Bad Request', message: 'Message content is required.' });
     }
 
-    const MODEL_ID = process.env.AI_MODEL_ID || "HuggingFaceH4/zephyr-7b-beta";
+    // OPTIMIZATION: Append :fastest to use the lowest latency provider available on the router
+    const MODEL_ID = (process.env.AI_MODEL_ID || "HuggingFaceH4/zephyr-7b-beta") + ":fastest";
     const HF_TOKEN = process.env.HF_TOKEN;
 
     if (!HF_TOKEN) {
@@ -29,7 +30,7 @@ exports.chat = async (req, res, next) => {
             {
                 model: MODEL_ID,
                 messages: [
-                    { role: "system", content: "You are the Chase Prestige Oracle. Respond professionally and concisely. DO NOT include internal thinking or process notes in your output. Provide only the final response." },
+                    { role: "system", content: "You are the Chase Prestige Oracle. Respond professionally, intelligently, and extremely concisely. Prioritize speed and directness. DO NOT include internal thinking." },
                     { role: "user", content: message.trim() }
                 ],
                 max_tokens: 500,
