@@ -263,22 +263,32 @@ async function initializeDatabase() {
     const pinHash = await bcrypt.hash('1234', 12);
 
     // Ensure Client exists
+    const clientUser = await pool.query(`
+      INSERT INTO banking.users (customer_id, account_number, full_name, email, balance, role)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      ON CONFLICT (email) DO UPDATE SET role = EXCLUDED.role
+      RETURNING id
+    `, ['CUST7742', 'ACC-921-008', 'John Doe', 'john@bank.com', 25400.50, 'CLIENT']);
+
     await pool.query(`
-      INSERT INTO banking.users (customer_id, account_number, full_name, email, password_hash, transaction_pin, balance, role)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      ON CONFLICT (email) DO UPDATE SET 
-        role = EXCLUDED.role,
-        transaction_pin = COALESCE(banking.users.transaction_pin, EXCLUDED.transaction_pin)
-    `, ['CUST7742', 'ACC-921-008', 'John Doe', 'john@bank.com', hash, pinHash, 25400.50, 'CLIENT']);
+      INSERT INTO banking.user_credentials (user_id, password_hash, transaction_pin)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (user_id) DO NOTHING
+    `, [clientUser.rows[0].id, hash, pinHash]);
 
     // Ensure Staff exists
+    const staffUser = await pool.query(`
+      INSERT INTO banking.users (customer_id, account_number, full_name, email, role)
+      VALUES ($1, $2, $3, $4, $5)
+      ON CONFLICT (email) DO UPDATE SET role = EXCLUDED.role
+      RETURNING id
+    `, ['EMP-101', 'OFFICE-MAIN', 'Bank Admin', 'admin@bank.com', 'STAFF']);
+
     await pool.query(`
-      INSERT INTO banking.users (customer_id, account_number, full_name, email, password_hash, role, transaction_pin)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-      ON CONFLICT (email) DO UPDATE SET 
-        role = EXCLUDED.role,
-        transaction_pin = COALESCE(banking.users.transaction_pin, EXCLUDED.transaction_pin)
-    `, ['EMP-101', 'OFFICE-MAIN', 'Bank Admin', 'admin@bank.com', hash, 'STAFF', pinHash]);
+      INSERT INTO banking.user_credentials (user_id, password_hash, transaction_pin)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (user_id) DO NOTHING
+    `, [staffUser.rows[0].id, hash, pinHash]);
 
     console.log('✅ Database Initialization & Role Sync Complete.');
 

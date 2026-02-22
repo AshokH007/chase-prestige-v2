@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import {
-    Sparkles,
     Send,
     Bot,
     User,
@@ -21,14 +20,17 @@ const AIConcierge = () => {
     const [messages, setMessages] = useState([
         {
             role: 'bot',
-            content: `Excellence is a habit, not an act. Good evening, ${user?.fullName.split(' ')[0] || 'Valued Client'}. I have synchronized with your institutional holdings. How shall we optimize your capital today?`,
+            content: `Excellence is a habit, not an act. Good evening, ${user?.full_name?.split(' ')[0] || 'Valued Client'}. I have synchronized with your institutional holdings. How shall we optimize your capital today?`,
             timestamp: new Date()
         }
     ]);
     const [input, setInput] = useState('');
+    const [image, setImage] = useState(null); // Base64 string
+    const [imagePreview, setImagePreview] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [thinkingState, setThinkingState] = useState(null);
     const messagesEndRef = useRef(null);
+    const fileInputRef = useRef(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,22 +40,58 @@ const AIConcierge = () => {
         scrollToBottom();
     }, [messages, thinkingState]);
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(URL.createObjectURL(file));
+                setImage(reader.result.split(',')[1]); // Just the base64 part
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const clearImage = () => {
+        setImage(null);
+        setImagePreview(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+
     const handleSend = async (e) => {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
 
         const userMsg = input.trim();
+        const currentImage = image;
+        const currentPreview = imagePreview;
+
         setInput('');
-        setMessages(prev => [...prev, { role: 'user', content: userMsg, timestamp: new Date() }]);
+        clearImage();
+
+        setMessages(prev => [...prev, {
+            role: 'user',
+            content: userMsg,
+            image: currentPreview,
+            timestamp: new Date()
+        }]);
+
         setIsLoading(true);
         setThinkingState('Accessing Institutional Ledger...');
 
         try {
             // Simulated reasoning steps for "Sleek" feel
             setTimeout(() => setThinkingState('Analyzing Risk Exposure...'), 1000);
-            setTimeout(() => setThinkingState('Synthesizing Portfolio Strategy...'), 2000);
+            if (currentImage) {
+                setTimeout(() => setThinkingState('Processing Visual Stimuli...'), 2000);
+            } else {
+                setTimeout(() => setThinkingState('Synthesizing Portfolio Strategy...'), 2000);
+            }
 
-            const res = await axios.post(`${API_BASE}/api/ai/chat`, { message: userMsg });
+            const res = await axios.post(`${API_BASE}/api/ai/chat`, {
+                message: userMsg,
+                image: currentImage
+            });
 
             setTimeout(() => {
                 setThinkingState(null);
@@ -149,6 +187,11 @@ const AIConcierge = () => {
                                         ? "bg-slate-50/50 backdrop-blur-sm text-[#000B1E] border border-slate-100 rounded-tl-none font-medium"
                                         : "bg-[#000B1E] text-white rounded-tr-none font-medium shadow-2xl shadow-indigo-900/10"
                                 )}>
+                                    {msg.image && (
+                                        <div className="mb-4 rounded-2xl overflow-hidden border border-white/10 shadow-lg max-w-sm">
+                                            <img src={msg.image} alt="Uploaded context" className="w-full h-auto object-cover" />
+                                        </div>
+                                    )}
                                     {msg.content}
 
                                     {msg.isSimulated && (
@@ -190,22 +233,58 @@ const AIConcierge = () => {
 
                     {/* INPUT SECTION - GLOW ON FOCUS */}
                     <div className="p-8 lg:p-12 bg-white/50 backdrop-blur-md border-t border-slate-100 relative max-w-5xl mx-auto w-full">
-                        <form onSubmit={handleSend} className="relative group">
-                            <div className="absolute -inset-2 bg-gradient-to-r from-[#C8AA6E]/20 to-transparent rounded-[2.5rem] opacity-0 group-within:opacity-100 blur transition-opacity duration-500"></div>
-                            <input
-                                type="text"
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                placeholder="Consult the Oracle on your capital strategy..."
-                                className="w-full bg-slate-50 text-[#000B1E] pl-8 pr-20 py-7 rounded-[2rem] shadow-inner border border-slate-200 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#C8AA6E]/30 transition-all font-medium placeholder:text-slate-400 placeholder:font-bold placeholder:uppercase placeholder:tracking-widest placeholder:text-[10px]"
-                            />
-                            <button
-                                type="submit"
-                                disabled={!input.trim() || isLoading}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 w-16 h-16 bg-[#000B1E] text-white rounded-[1.5rem] flex items-center justify-center hover:bg-[#C8AA6E] transition-all active:scale-90 disabled:opacity-50 shadow-2xl shadow-indigo-900/20"
-                            >
-                                <Send size={24} />
-                            </button>
+                        {imagePreview && (
+                            <div className="mb-6 flex items-center gap-4 animate-in slide-in-from-bottom-2">
+                                <div className="relative group/preview">
+                                    <img src={imagePreview} className="w-20 h-20 rounded-2xl object-cover border-2 border-[#C8AA6E]" alt="Upload preview" />
+                                    <button
+                                        onClick={clearImage}
+                                        className="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full p-1 shadow-lg opacity-0 group-hover/preview:opacity-100 transition-opacity"
+                                    >
+                                        <Loader2 size={12} className="rotate-45" /> {/* Using Loader2 as a cross for now or just text */}
+                                    </button>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#C8AA6E]">Image Context Attached</span>
+                                    <span className="text-[9px] text-slate-400 font-bold">Llama 3.2 Vision will analyze this visual data</span>
+                                </div>
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSend} className="relative group flex gap-4 items-center">
+                            <div className="relative flex-1">
+                                <div className="absolute -inset-2 bg-gradient-to-r from-[#C8AA6E]/20 to-transparent rounded-[2.5rem] opacity-0 group-within:opacity-100 blur transition-opacity duration-500"></div>
+                                <input
+                                    type="text"
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    placeholder="Consult the Oracle on your capital strategy..."
+                                    className="w-full bg-slate-50 text-[#000B1E] pl-8 pr-20 py-7 rounded-[2rem] shadow-inner border border-slate-200 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#C8AA6E]/30 transition-all font-medium placeholder:text-slate-400 placeholder:font-bold placeholder:uppercase placeholder:tracking-widest placeholder:text-[10px]"
+                                />
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        onChange={handleImageChange}
+                                        accept="image/*"
+                                        className="hidden"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => fileInputRef.current.click()}
+                                        className="p-3 text-slate-400 hover:text-[#C8AA6E] transition-colors"
+                                    >
+                                        <Command size={24} />
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={(!input.trim() && !image) || isLoading}
+                                        className="w-16 h-16 bg-[#000B1E] text-white rounded-[1.5rem] flex items-center justify-center hover:bg-[#C8AA6E] transition-all active:scale-90 disabled:opacity-50 shadow-2xl shadow-indigo-900/20"
+                                    >
+                                        <Send size={24} />
+                                    </button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
