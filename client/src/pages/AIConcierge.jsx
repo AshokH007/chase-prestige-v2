@@ -18,7 +18,7 @@ const AIConcierge = () => {
     const [messages, setMessages] = useState([
         {
             role: 'bot',
-            content: `Excellence is a habit, not an act. Good evening, ${user?.full_name?.split(' ')[0] || 'Valued Client'}. I have synchronized with your institutional holdings. How shall we optimize your capital today?`,
+            content: `Excellence is a habit, not an act. Good evening, ${user?.fullName?.split(' ')[0] || 'Valued Client'}. I have synchronized with your institutional holdings. How shall we optimize your capital today?`,
             timestamp: new Date()
         }
     ]);
@@ -195,7 +195,7 @@ const AIConcierge = () => {
                             </div>
                         </div>
                     )}
-                    <div ref={messagesEndRef} className="h-20 flex-none" />
+                    <div className="h-20 flex-none" />
                 </div>
             </div>
 
