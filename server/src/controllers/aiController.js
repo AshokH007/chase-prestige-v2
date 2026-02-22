@@ -25,7 +25,7 @@ exports.chat = async (req, res, next) => {
 
         // 2. CALL HUGGING FACE INFERENCE API
         const hfResponse = await axios.post(
-            `https://api-inference.huggingface.co/models/${MODEL_ID}`,
+            `https://router.huggingface.co/hf-inference/models/${MODEL_ID}`,
             {
                 inputs: `<|system|>\nYou are the Chase Prestige Oracle. Respond professionally and concisely. Avoid robotic AI archetypes.\n<|user|>\n${message.trim()}\n<|assistant|>\n`,
                 parameters: {
