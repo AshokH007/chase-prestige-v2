@@ -23,18 +23,19 @@ exports.chat = async (req, res, next) => {
     try {
         console.log(`🤖 AI Request: Model=${MODEL_ID}, Message="${message.trim().substring(0, 50)}..."`);
 
-        // 2. CALL HUGGING FACE INFERENCE API
+        // 2. CALL HUGGING FACE ROUTER API (OpenAI-compatible)
         const hfResponse = await axios.post(
-            `https://router.huggingface.co/hf-inference/models/${MODEL_ID}`,
+            `https://router.huggingface.co/v1/chat/completions`,
             {
-                inputs: `<|system|>\nYou are the Chase Prestige Oracle. Respond professionally and concisely. Avoid robotic AI archetypes.\n<|user|>\n${message.trim()}\n<|assistant|>\n`,
-                parameters: {
-                    max_new_tokens: 500,
-                    temperature: 0.7,
-                    top_p: 0.95,
-                    repetition_penalty: 1.1,
-                    return_full_text: false
-                }
+                model: MODEL_ID,
+                messages: [
+                    { role: "system", content: "You are the Chase Prestige Oracle. Respond professionally and concisely. Avoid robotic AI archetypes." },
+                    { role: "user", content: message.trim() }
+                ],
+                max_tokens: 500,
+                temperature: 0.7,
+                top_p: 0.95,
+                stream: false
             },
             {
                 headers: {
@@ -45,31 +46,16 @@ exports.chat = async (req, res, next) => {
             }
         );
 
-        console.log(`✅ HF Response Received: Status=${hfResponse.status}`);
+        console.log(`✅ HF Router Response Received: Status=${hfResponse.status}`);
 
-        // Handle model loading state
-        if (hfResponse.data.error && hfResponse.data.error.includes("loading")) {
-            console.warn('⚠️ Model is still loading on HF side');
-            return res.status(503).json({
-                error: 'Service Unavailable',
-                message: hfResponse.data.error
-            });
-        }
-
-        let aiText = "";
-        if (Array.isArray(hfResponse.data)) {
-            aiText = hfResponse.data[0].generated_text || "";
-        } else if (hfResponse.data.generated_text) {
-            aiText = hfResponse.data.generated_text;
+        // 3. PARSE OPENAI-STYLE RESPONSE
+        if (hfResponse.data && hfResponse.data.choices && hfResponse.data.choices.length > 0) {
+            const aiReply = hfResponse.data.choices[0].message.content;
+            res.json({ response: aiReply });
         } else {
-            // IF NO DATA, RETURN ACTUAL ERROR BUT NOT THE FAKE LATENCY MESSAGE
-            console.error('❌ No generated text in HF response:', hfResponse.data);
-            return res.status(502).json({ error: 'Inference Failure', message: 'The model failed to produce a response. Check HF logs.' });
+            console.error('❌ Unexpected Router Response Format:', hfResponse.data);
+            return res.status(502).json({ error: 'Inference Failure', message: 'The model failed to produce a valid response via the router.' });
         }
-
-        // 3. CLEAN RESPONSE
-        const cleanReply = aiText.replace(/<\|.*?\|>/g, "").trim();
-        res.json({ response: cleanReply });
 
     } catch (error) {
         console.error('❌ [AI Controller Error]:', error.response?.data || error.message);
