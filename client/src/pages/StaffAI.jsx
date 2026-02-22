@@ -61,7 +61,15 @@ const StaffAI = () => {
             setIsLoading(false);
         } catch (err) {
             setProcessingStep(null);
-            const errorMsg = err.response?.data?.message || err.message || "Institutional relay connectivity failure.";
+
+            let errorMsg = "Institutional relay connectivity failure.";
+
+            if (err.response?.data?.message) {
+                errorMsg = `CRITICAL ERROR: ${err.response.data.message}`;
+            } else if (err.message) {
+                errorMsg = `SYSTEM FAILURE: ${err.message}`;
+            }
+
             setMessages(prev => [...prev, {
                 role: 'bot',
                 content: errorMsg,

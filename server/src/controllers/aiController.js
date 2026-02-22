@@ -12,8 +12,8 @@ exports.chat = async (req, res, next) => {
         return res.status(400).json({ error: 'Bad Request', message: 'Message content is required.' });
     }
 
-    // OPTIMIZATION: Using the standard model ID. (Removed :fastest to rule out auth syntax issues)
-    const MODEL_ID = process.env.AI_MODEL_ID || "HuggingFaceH4/zephyr-7b-beta";
+    // OPTIMIZATION: Using a more stable model ID on the router.
+    const MODEL_ID = process.env.AI_MODEL_ID || "mistralai/Mistral-7B-Instruct-v0.3";
     const HF_TOKEN = process.env.HF_TOKEN;
 
     if (!HF_TOKEN) {
@@ -56,8 +56,15 @@ exports.chat = async (req, res, next) => {
         if (hfResponse.data && hfResponse.data.choices && hfResponse.data.choices.length > 0) {
             let aiReply = hfResponse.data.choices[0].message.content;
 
+            console.log(`📝 Raw AI Response (Length: ${aiReply.length})`);
+
             // STRIP INTERNAL THINKING BLOCKS (e.g. <think>...</think> or unclosed <think>...)
             aiReply = aiReply.replace(/<think>[\s\S]*?(?:<\/think>|$)/gi, "").trim();
+
+            if (!aiReply) {
+                console.warn('⚠️ Cleaned AI reply is empty after stripping <think> tags.');
+                aiReply = "The Institutional Oracle is processing complex data but produced no public output. Please rephrase or try again.";
+            }
 
             res.json({ response: aiReply });
         } else {

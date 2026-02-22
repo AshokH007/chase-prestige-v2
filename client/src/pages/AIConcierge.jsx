@@ -95,7 +95,15 @@ const AIConcierge = () => {
 
         } catch (err) {
             setThinkingState(null);
-            const errorMsg = err.response?.data?.message || err.message || "Institutional relay latency encountered.";
+
+            let errorMsg = "Institutional relay latency encountered.";
+
+            if (err.response?.data?.message) {
+                errorMsg = `ERROR: ${err.response.data.message}`;
+            } else if (err.message) {
+                errorMsg = `NETWORK ERROR: ${err.message}`;
+            }
+
             setMessages(prev => [...prev, {
                 role: 'bot',
                 content: errorMsg,
