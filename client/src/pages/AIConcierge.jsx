@@ -107,9 +107,10 @@ const AIConcierge = () => {
 
         } catch (err) {
             setThinkingState(null);
+            const errorMsg = err.response?.data?.message || err.message || "My institutional relay is experiencing high latency. Please retry shortly.";
             setMessages(prev => [...prev, {
                 role: 'bot',
-                content: "I apologize, but my market analytical core is currently recalibrating for high-volatility events. Please try again.",
+                content: errorMsg,
                 timestamp: new Date()
             }]);
             setIsLoading(false);
@@ -123,7 +124,7 @@ const AIConcierge = () => {
     ];
 
     return (
-        <div className="h-[calc(100vh-120px)] flex flex-col p-6 lg:p-10 animate-in fade-in zoom-in-95 duration-1000 max-w-6xl mx-auto w-full relative">
+        <div className="h-screen max-h-[900px] min-h-[600px] flex flex-col p-4 lg:p-10 animate-in fade-in zoom-in-95 duration-1000 max-w-6xl mx-auto w-full relative">
             {/* FLOATING SECURITY BADGE */}
             <div className="absolute top-10 right-10 hidden xl:flex flex-col items-end gap-2 animate-in slide-in-from-right-10 duration-1000">
                 <div className="px-4 py-2 bg-white/50 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
