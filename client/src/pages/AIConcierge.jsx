@@ -123,69 +123,63 @@ const AIConcierge = () => {
     ];
 
     return (
-        <div className="h-[calc(100vh-120px)] flex flex-col p-6 lg:p-10 animate-in fade-in zoom-in-95 duration-1000">
-            {/* NEW SLEEK HEADER */}
-            <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="flex items-center gap-6">
-                    <div className="relative">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-[#C8AA6E] to-[#E5D2A8] rounded-2xl blur opacity-30 animate-pulse"></div>
-                        <div className="relative p-4 bg-[#000B1E] rounded-2xl border border-white/5 shadow-2xl shrink-0">
-                            <Orbit className="text-[#C8AA6E] animate-[spin_10s_linear_infinite]" size={28} />
-                        </div>
-                    </div>
-                    <div>
-                        <div className="flex items-center gap-3 mb-1">
-                            <h2 className="text-4xl font-bold text-[#000B1E] tracking-tight font-['Playfair_Display']">Prestige <span className="text-[#C8AA6E]">Oracle</span></h2>
-                            <span className="px-2 py-0.5 bg-[#C8AA6E]/10 text-[#C8AA6E] text-[10px] font-black uppercase tracking-[0.2em] rounded-md border border-[#C8AA6E]/20">Pro</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <div className="flex gap-1">
-                                {[1, 2, 3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-emerald-500/30"></div>)}
-                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                            </div>
-                            <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-slate-400">Neural Link Stable • UHNW Protocol Tier 5</span>
-                        </div>
-                    </div>
+        <div className="h-[calc(100vh-120px)] flex flex-col p-6 lg:p-10 animate-in fade-in zoom-in-95 duration-1000 max-w-6xl mx-auto w-full relative">
+            {/* FLOATING SECURITY BADGE */}
+            <div className="absolute top-10 right-10 hidden xl:flex flex-col items-end gap-2 animate-in slide-in-from-right-10 duration-1000">
+                <div className="px-4 py-2 bg-white/50 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Diamond VII Security Baseline</span>
                 </div>
+                <div className="px-4 py-2 bg-[#000B1E] rounded-2xl shadow-xl flex items-center gap-3">
+                    <ShieldCheck className="text-[#C8AA6E]" size={14} />
+                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-white">Quantum Encryption Active</span>
+                </div>
+            </div>
 
-                <div className="hidden lg:flex items-center gap-4 text-slate-300">
-                    <div className="text-right">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Response Latency</p>
-                        <p className="text-sm font-mono text-[#000B1E]">14ms Global</p>
+            {/* MINIMAL HEADER */}
+            <div className="mb-12 text-center">
+                <div className="inline-flex items-center gap-6 mb-4">
+                    <div className="relative group">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-[#C8AA6E] to-[#E5D2A8] rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                        <div className="relative p-3 bg-[#000B1E] rounded-2xl border border-white/5 shadow-2xl flex items-center justify-center">
+                            <Orbit className="text-[#C8AA6E] animate-[spin_15s_linear_infinite]" size={24} />
+                        </div>
                     </div>
-                    <div className="w-px h-8 bg-slate-200"></div>
-                    <div className="text-right">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Context Window</p>
-                        <p className="text-sm font-mono text-[#000B1E]">128k Tokens</p>
+                    <div className="text-left">
+                        <h2 className="text-4xl font-bold text-[#000B1E] tracking-tight font-['Playfair_Display']">Prestige <span className="text-[#C8AA6E]">Oracle</span></h2>
+                        <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-slate-400">Institutional Intelligence Protocol</span>
+                            <span className="px-1.5 py-0.5 bg-[#C8AA6E]/10 text-[#C8AA6E] text-[8px] font-black uppercase tracking-widest rounded border border-[#C8AA6E]/20">Pro</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-col lg:flex-row gap-10 min-h-0">
-                {/* 1. MAIN CHAT ARENA */}
-                <div className="flex-1 flex flex-col bg-white rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] border border-slate-100 overflow-hidden relative">
+            <div className="flex-1 flex flex-col items-center min-h-0">
+                {/* TRANSFORMED CENTERED CHAT ARENA */}
+                <div className="w-full max-w-4xl flex-1 flex flex-col bg-white rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.06)] border border-slate-100/50 overflow-hidden relative">
 
-                    {/* Glass Decor */}
-                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-slate-50 rounded-full blur-[120px] -mr-[250px] -mt-[250px] opacity-60 pointer-events-none"></div>
-                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#C8AA6E]/5 rounded-full blur-[100px] -ml-[200px] -mb-[200px] opacity-40 pointer-events-none"></div>
+                    {/* Minimalist Glass Decor - POINT-EVENTS-NONE FIXED */}
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-slate-50 rounded-full blur-[100px] -mr-48 -mt-48 opacity-40 pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#C8AA6E]/5 rounded-full blur-[80px] -ml-40 -mb-40 opacity-30 pointer-events-none"></div>
 
                     {/* Messages Area */}
-                    <div className="flex-1 overflow-y-auto p-8 lg:p-12 space-y-10 custom-scrollbar relative z-10">
+                    <div className="flex-1 overflow-y-auto p-8 lg:p-14 space-y-12 custom-scrollbar relative z-10">
                         {messages.map((msg, idx) => (
                             <div key={idx} className={clsx("flex gap-6 animate-in slide-in-from-bottom-4 duration-500", msg.role === 'user' ? 'flex-row-reverse' : '')}>
                                 <div className={clsx(
-                                    "w-12 h-12 rounded-[1.25rem] flex items-center justify-center shrink-0 shadow-xl border transition-transform hover:scale-110",
+                                    "w-11 h-11 rounded-[1.2rem] flex items-center justify-center shrink-0 shadow-lg border transition-all",
                                     msg.role === 'bot'
                                         ? "bg-[#000B1E] text-[#C8AA6E] border-white/10"
-                                        : "bg-white text-slate-400 border-slate-100"
+                                        : "bg-white text-slate-300 border-slate-100"
                                 )}>
-                                    {msg.role === 'bot' ? <Bot size={24} /> : <User size={24} />}
+                                    {msg.role === 'bot' ? <Bot size={22} /> : <User size={22} />}
                                 </div>
                                 <div className={clsx(
-                                    "max-w-[85%] lg:max-w-[70%] p-8 rounded-[2.5rem] text-sm leading-[1.8] shadow-sm relative group",
+                                    "max-w-[85%] lg:max-w-[75%] p-7 rounded-[2.2rem] text-sm leading-[1.8] shadow-sm relative group transition-all",
                                     msg.role === 'bot'
-                                        ? "bg-slate-50/50 backdrop-blur-sm text-[#000B1E] border border-slate-100 rounded-tl-none font-medium"
-                                        : "bg-[#000B1E] text-white rounded-tr-none font-medium shadow-2xl shadow-indigo-900/10"
+                                        ? "bg-slate-50/40 backdrop-blur-sm text-[#000B1E] border border-slate-100 rounded-tl-none font-medium"
+                                        : "bg-[#000B1E] text-white rounded-tr-none font-medium shadow-xl shadow-indigo-900/10"
                                 )}>
                                     {msg.image && (
                                         <div className="mb-4 rounded-2xl overflow-hidden border border-white/10 shadow-lg max-w-sm">
@@ -194,15 +188,8 @@ const AIConcierge = () => {
                                     )}
                                     {msg.content}
 
-                                    {msg.isSimulated && (
-                                        <div className="mt-4 pt-4 border-t border-slate-200/50 flex items-center justify-between">
-                                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#C8AA6E]">Simulation Active</span>
-                                            <span className="text-[9px] text-slate-400 italic">Configure HF_TOKEN for live LLM</span>
-                                        </div>
-                                    )}
-
                                     <div className={clsx(
-                                        "text-[10px] mt-4 flex items-center gap-3 font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity",
+                                        "text-[9px] mt-4 flex items-center gap-3 font-bold uppercase tracking-widest opacity-40 group-hover:opacity-100 transition-opacity",
                                         msg.role === 'bot' ? 'text-slate-400' : 'text-slate-500'
                                     )}>
                                         {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -212,56 +199,68 @@ const AIConcierge = () => {
                             </div>
                         ))}
 
-                        {/* THINKING STATE UI */}
+                        {/* MINIMAL THINKING STATE */}
                         {thinkingState && (
-                            <div className="flex gap-6 animate-pulse">
-                                <div className="w-12 h-12 rounded-[1.25rem] bg-[#000B1E] flex items-center justify-center shrink-0 border border-white/10 shadow-xl">
-                                    <Loader2 size={24} className="text-[#C8AA6E] animate-spin" />
+                            <div className="flex gap-6">
+                                <div className="w-11 h-11 rounded-[1.2rem] bg-[#000B1E] flex items-center justify-center shrink-0 border border-white/10 shadow-xl">
+                                    <div className="w-1.5 h-1.5 bg-[#C8AA6E] rounded-full animate-ping"></div>
                                 </div>
-                                <div className="px-8 py-6 bg-slate-50/50 backdrop-blur-sm rounded-[2rem] border border-slate-100 flex items-center gap-4">
-                                    <div className="flex gap-1">
-                                        <div className="w-1 h-1 bg-[#C8AA6E] rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                        <div className="w-1 h-1 bg-[#C8AA6E] rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                        <div className="w-1 h-1 bg-[#C8AA6E] rounded-full animate-bounce"></div>
-                                    </div>
-                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">{thinkingState}</span>
+                                <div className="flex items-center">
+                                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C8AA6E]/60 animate-pulse">{thinkingState}</span>
                                 </div>
                             </div>
                         )}
                         <div ref={messagesEndRef} />
                     </div>
 
-                    {/* INPUT SECTION - GLOW ON FOCUS */}
-                    <div className="p-8 lg:p-12 bg-white/50 backdrop-blur-md border-t border-slate-100 relative max-w-5xl mx-auto w-full">
+                    {/* INPUT SECTION - STREAMLINED */}
+                    <div className="p-8 lg:p-12 bg-white/50 backdrop-blur-xl border-t border-slate-50 relative w-full">
+
+                        {/* MINIMAL PILL SUGGESTIONS */}
+                        {!input && !image && messages.length === 1 && (
+                            <div className="absolute -top-14 left-1/2 -translate-x-1/2 flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-700 w-full justify-center px-6">
+                                {suggestions.map((item, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setInput(item.label)}
+                                        className="px-5 py-2.5 bg-white/80 backdrop-blur-md border border-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest text-[#000B1E] hover:border-[#C8AA6E] hover:bg-white transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                                    >
+                                        {item.label}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+
                         {imagePreview && (
                             <div className="mb-6 flex items-center gap-4 animate-in slide-in-from-bottom-2">
                                 <div className="relative group/preview">
-                                    <img src={imagePreview} className="w-20 h-20 rounded-2xl object-cover border-2 border-[#C8AA6E]" alt="Upload preview" />
+                                    <img src={imagePreview} className="w-16 h-16 rounded-xl object-cover border-2 border-[#C8AA6E]" alt="Upload preview" />
                                     <button
                                         onClick={clearImage}
-                                        className="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full p-1 shadow-lg opacity-0 group-hover/preview:opacity-100 transition-opacity"
+                                        className="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full p-1 shadow-lg"
                                     >
-                                        <Loader2 size={12} className="rotate-45" /> {/* Using Loader2 as a cross for now or just text */}
+                                        <X size={10} />
                                     </button>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#C8AA6E]">Image Context Attached</span>
-                                    <span className="text-[9px] text-slate-400 font-bold">Llama 3.2 Vision will analyze this visual data</span>
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-[#C8AA6E]">Context Attached</span>
+                                    <span className="text-[8px] text-slate-400 font-bold">Multimodal Analysis Ready</span>
                                 </div>
                             </div>
                         )}
 
-                        <form onSubmit={handleSend} className="relative group flex gap-4 items-center">
-                            <div className="relative flex-1">
-                                <div className="absolute -inset-2 bg-gradient-to-r from-[#C8AA6E]/20 to-transparent rounded-[2.5rem] opacity-0 group-within:opacity-100 blur transition-opacity duration-500"></div>
+                        <form onSubmit={handleSend} className="relative flex gap-4 items-center">
+                            <div className="relative flex-1 group">
+                                {/* FIXED POINTER EVENTS ON DECORATIVE DIV */}
+                                <div className="absolute -inset-1 bg-[#C8AA6E]/10 rounded-[2rem] opacity-0 group-within:opacity-100 blur transition-opacity pointer-events-none"></div>
                                 <input
                                     type="text"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
-                                    placeholder="Consult the Oracle on your capital strategy..."
-                                    className="w-full bg-slate-50 text-[#000B1E] pl-8 pr-20 py-7 rounded-[2rem] shadow-inner border border-slate-200 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#C8AA6E]/30 transition-all font-medium placeholder:text-slate-400 placeholder:font-bold placeholder:uppercase placeholder:tracking-widest placeholder:text-[10px]"
+                                    placeholder="Type your strategic inquiry..."
+                                    className="w-full bg-slate-50 text-[#000B1E] pl-8 pr-32 py-6 rounded-[2rem] border border-slate-100 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#C8AA6E]/20 transition-all font-medium placeholder:text-slate-300 placeholder:font-black placeholder:uppercase placeholder:tracking-[0.2em] placeholder:text-[9px] relative z-20"
                                 />
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 z-30">
                                     <input
                                         type="file"
                                         ref={fileInputRef}
@@ -272,16 +271,16 @@ const AIConcierge = () => {
                                     <button
                                         type="button"
                                         onClick={() => fileInputRef.current.click()}
-                                        className="p-3 text-slate-400 hover:text-[#C8AA6E] transition-colors"
+                                        className="p-3 text-slate-300 hover:text-[#C8AA6E] transition-colors"
                                     >
-                                        <Command size={24} />
+                                        <Command size={20} />
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={(!input.trim() && !image) || isLoading}
-                                        className="w-16 h-16 bg-[#000B1E] text-white rounded-[1.5rem] flex items-center justify-center hover:bg-[#C8AA6E] transition-all active:scale-90 disabled:opacity-50 shadow-2xl shadow-indigo-900/20"
+                                        className="w-14 h-14 bg-[#000B1E] text-white rounded-2xl flex items-center justify-center hover:bg-[#C8AA6E] transition-all active:scale-95 disabled:opacity-30 shadow-xl shadow-indigo-900/10"
                                     >
-                                        <Send size={24} />
+                                        <Send size={20} />
                                     </button>
                                 </div>
                             </div>
@@ -289,45 +288,15 @@ const AIConcierge = () => {
                     </div>
                 </div>
 
-                {/* 2. STRATEGIC SIDEBAR */}
-                <div className="w-full lg:w-[380px] space-y-8 contents-scrollbar">
-                    <div className="p-8 rounded-[3rem] bg-[#000B1E] text-white shadow-2xl shadow-indigo-900/30 border border-white/5 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#C8AA6E]/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000"></div>
-                        <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C8AA6E] mb-6">Security Clearance</h3>
-                        <p className="text-3xl font-bold font-['Playfair_Display'] mb-2">Diamond VII</p>
-                        <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
-                            Your session is protected by Chase Prestige quantum-resistant encryption. All inquiries are strictly private.
-                        </p>
+                {/* INSTITUTIONAL FOOTNOTE */}
+                <div className="mt-8 flex items-center gap-6 opacity-30 grayscale hover:grayscale-0 transition-all">
+                    <div className="flex items-center gap-2">
+                        <ShieldCheck size={12} />
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">End-To-End Encrypted</span>
                     </div>
-
-                    <div className="space-y-4">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] px-4">Strategic Fast-Action</p>
-                        {suggestions.map((item, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => setInput(item.label)}
-                                className="w-full p-6 bg-white hover:bg-slate-50 border border-slate-100 rounded-[2rem] flex items-center gap-5 text-left transition-all group shadow-sm hover:shadow-xl hover:-translate-y-1"
-                            >
-                                <div className={clsx("p-4 bg-slate-100 rounded-2xl group-hover:bg-[#000B1E] group-hover:text-white transition-all", item.color)}>
-                                    <item.icon size={20} />
-                                </div>
-                                <span className="text-[11px] font-black text-[#000B1E] uppercase tracking-widest flex-1">{item.label}</span>
-                                <ChevronRight size={18} className="text-slate-300 group-hover:text-[#C8AA6E] group-hover:translate-x-1 transition-all" />
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* STATS CARD */}
-                    <div className="p-8 rounded-[3rem] bg-gradient-to-br from-emerald-50 to-white border border-emerald-100 shadow-sm relative overflow-hidden">
-                        <div className="relative z-10">
-                            <div className="flex items-center gap-3 mb-4">
-                                <ShieldCheck className="text-emerald-600" size={24} />
-                                <span className="text-[10px] font-black text-emerald-900 uppercase tracking-widest">Privacy Protected</span>
-                            </div>
-                            <p className="text-[10px] text-emerald-800/70 leading-relaxed font-bold italic">
-                                "Institutional data silos remain isolated. No personal identifiers are transmitted to global LLM kernels."
-                            </p>
-                        </div>
+                    <div className="w-1 h-1 rounded-full bg-slate-300"></div>
+                    <div className="flex items-center gap-2">
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Institutional Tier V</span>
                     </div>
                 </div>
             </div>
