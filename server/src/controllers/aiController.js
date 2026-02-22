@@ -21,6 +21,9 @@ exports.chat = async (req, res, next) => {
         return res.status(500).json({ error: 'Configuration Error', message: 'Hugging Face Token is missing on backend.' });
     }
 
+    // DEBUG: Verify token prefix safely
+    console.log(`🔑 Token Check: ${HF_TOKEN.substring(0, 4)}... (Length: ${HF_TOKEN.length})`);
+
     try {
         console.log(`🤖 AI Request: Model=${MODEL_ID}, Message="${message.trim().substring(0, 50)}..."`);
 
