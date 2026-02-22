@@ -12,17 +12,14 @@ exports.chat = async (req, res, next) => {
         return res.status(400).json({ error: 'Bad Request', message: 'Message content is required.' });
     }
 
-    // OPTIMIZATION: Reverting to Zephyr for backend reliability.
-    const MODEL_ID = process.env.AI_MODEL_ID || "HuggingFaceH4/zephyr-7b-beta";
+    // OPTIMIZATION: Using Llama-3.2-3B-Instruct for maximum stability and speed on the router.
+    const MODEL_ID = process.env.AI_MODEL_ID || "meta-llama/Llama-3.2-3B-Instruct";
     const HF_TOKEN = process.env.HF_TOKEN;
 
     if (!HF_TOKEN) {
         console.error('❌ HF_TOKEN is missing in environment variables');
         return res.status(500).json({ error: 'Configuration Error', message: 'Hugging Face Token is missing on backend.' });
     }
-
-    // DEBUG: Verify token prefix safely
-    console.log(`🔑 Token Check: ${HF_TOKEN.substring(0, 4)}... (Length: ${HF_TOKEN.length})`);
 
     try {
         console.log(`🤖 AI Request: Model=${MODEL_ID}, Message="${message.trim().substring(0, 50)}..."`);
@@ -33,12 +30,11 @@ exports.chat = async (req, res, next) => {
             {
                 model: MODEL_ID,
                 messages: [
-                    { role: "system", content: "You are the Chase Prestige Oracle, a premium banking assistant. Respond intelligently and professionally. Keep responses concise but complete. Do not include internal thought blocks in your final output." },
+                    { role: "system", content: "You are the Chase Prestige Oracle, a polite and professional banking assistant. Provide comprehensive, helpful, and clear responses." },
                     { role: "user", content: message.trim() }
                 ],
-                max_tokens: 500,
+                max_tokens: 1024,
                 temperature: 0.7,
-                top_p: 0.95,
                 stream: false
             },
             {
@@ -46,33 +42,21 @@ exports.chat = async (req, res, next) => {
                     'Authorization': `Bearer ${HF_TOKEN}`,
                     'Content-Type': 'application/json'
                 },
-                timeout: 30000 // 30s strict timeout
+                timeout: 30000
             }
         );
 
         console.log(`✅ HF Router Response Received: Status=${hfResponse.status}`);
 
-        // 3. PARSE & CLEAN OPENAI-STYLE RESPONSE
-        if (hfResponse.data && hfResponse.data.choices && hfResponse.data.choices.length > 0) {
-            let aiReply = hfResponse.data.choices[0].message.content;
+        // 3. PARSE RESPONSE
+        if (hfResponse.data?.choices?.[0]?.message?.content) {
+            const aiReply = hfResponse.data.choices[0].message.content.trim();
 
-            console.log(`📝 Raw AI Response (Length: ${aiReply.length})`);
-
-            // STRIP INTERNAL THINKING BLOCKS SAFELY
-            // 1. Remove closed blocks
-            aiReply = aiReply.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
-            // 2. Remove trailing unclosed tags (occurs if response is truncated)
-            aiReply = aiReply.replace(/<think>[\s\S]*$/gi, "").trim();
-
-            if (!aiReply) {
-                console.warn('⚠️ Cleaned AI reply is empty after stripping <think> tags.');
-                aiReply = "The Institutional Oracle is processing complex data but produced no public output. Please rephrase or try again.";
-            }
-
+            console.log(`📝 AI Success: ${aiReply.substring(0, 50)}...`);
             res.json({ response: aiReply });
         } else {
             console.error('❌ Unexpected Router Response Format:', hfResponse.data);
-            return res.status(502).json({ error: 'Inference Failure', message: 'The model failed to produce a valid response via the router.' });
+            return res.status(502).json({ error: 'Inference Failure', message: 'The AI model responded but in an invalid format.' });
         }
 
     } catch (error) {
