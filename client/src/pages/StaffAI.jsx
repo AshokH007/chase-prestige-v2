@@ -28,6 +28,7 @@ const StaffAI = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [processingStep, setProcessingStep] = useState(null);
     const chatContainerRef = useRef(null);
+    const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
         if (chatContainerRef.current) {
@@ -36,7 +37,7 @@ const StaffAI = () => {
     };
 
     useEffect(() => {
-        scrollToBottom();
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages, processingStep]);
 
     const handleSend = async (e) => {
@@ -161,6 +162,7 @@ const StaffAI = () => {
                             </div>
                         </div>
                     )}
+                    <div ref={messagesEndRef} />
                     <div className="h-20 flex-none" />
                 </div>
             </div>

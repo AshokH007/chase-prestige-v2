@@ -23,6 +23,7 @@ const Sidebar = ({ role = 'CLIENT', onLogout }) => {
     const location = useLocation();
 
     const clientLinks = [
+        { name: 'Prestige GPT', icon: Sparkles, path: '/concierge' },
         { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
         { name: 'Transactions', icon: ArrowLeftRight, path: '/transactions' },
         { name: 'Cards', icon: CreditCard, path: '/cards' },
@@ -31,7 +32,6 @@ const Sidebar = ({ role = 'CLIENT', onLogout }) => {
         { name: 'Loans', icon: Landmark, path: '/loans' },
         { name: 'Global Markets', icon: TrendingUp, path: '/investments' },
         { name: 'Crypto Vault', icon: Hexagon, path: '/crypto' },
-        { name: 'Prestige GPT', icon: Sparkles, path: '/concierge' },
     ];
 
     const staffLinks = [

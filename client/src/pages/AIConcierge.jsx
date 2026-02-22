@@ -29,6 +29,7 @@ const AIConcierge = () => {
     const [thinkingState, setThinkingState] = useState(null);
     const chatContainerRef = useRef(null);
     const fileInputRef = useRef(null);
+    const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
         if (chatContainerRef.current) {
@@ -37,7 +38,7 @@ const AIConcierge = () => {
     };
 
     useEffect(() => {
-        scrollToBottom();
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages, thinkingState]);
 
     const handleImageChange = (e) => {
@@ -203,6 +204,7 @@ const AIConcierge = () => {
                             </div>
                         </div>
                     )}
+                    <div ref={messagesEndRef} />
                     <div className="h-20 flex-none" />
                 </div>
             </div>
