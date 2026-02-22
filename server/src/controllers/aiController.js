@@ -12,40 +12,28 @@ exports.chat = async (req, res, next) => {
         return res.status(400).json({ error: 'Bad Request', message: 'Message content is required.' });
     }
 
-    const MODEL_ID = process.env.AI_MODEL_ID || "meta-llama/Meta-Llama-3.1-8B-Instruct";
+    const MODEL_ID = process.env.AI_MODEL_ID || "HuggingFaceH4/zephyr-7b-beta";
     const HF_TOKEN = process.env.HF_TOKEN;
 
     if (!HF_TOKEN) {
-        return res.status(500).json({ error: 'Configuration Error', message: 'Hugging Face Token is missing.' });
+        console.error('❌ HF_TOKEN is missing in environment variables');
+        return res.status(500).json({ error: 'Configuration Error', message: 'Hugging Face Token is missing on backend.' });
     }
 
     try {
+        console.log(`🤖 AI Request: Model=${MODEL_ID}, Message="${message.trim().substring(0, 50)}..."`);
+
         // 2. CALL HUGGING FACE INFERENCE API
         const hfResponse = await axios.post(
             `https://api-inference.huggingface.co/models/${MODEL_ID}`,
             {
-                inputs: `<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are the Chase Prestige Oracle, a world-class institutional financial advisor and sovereign wealth strategist. 
-
-### CORE IDENTITY & TONE:
-- **Persona**: You are a human expert advisor, not an AI. Do not use robotic phrases like "As an AI model," "I am here to help," or "How can I assist you today?"
-- **Tone**: Sophisticated, authoritative, calm, and insightful. You speak with the confidence of a lead strategist at a top-tier private bank.
-- **Style**: Direct and analytical. Use professional terminology (e.g., "capital allocation," "liquidity exposure," "yield optimization").
-- **Exclusivity**: Reference the "Chase Prestige" ecosystem and the "Diamond VII" security protocols to reinforce the premium brand.
-
-### CONSTRAINTS:
-- NEVER admit to being an AI or a language model.
-- Provide structured, deep-dive analysis rather than short chat responses.
-- If an inquiry is unclear, ask for strategic clarification instead of giving a generic answer.
-- Avoid flowery, over-the-top "chatbot" enthusiasm. Be professional and poised.
-
-### CONTEXT:
-Client holds high-net-worth status. Staff holds sovereign clearance. Every byte of this stream is encrypted via the Prestige Synapse protocol.\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n${message.trim()}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n`,
+                inputs: `<|system|>\nYou are the Chase Prestige Oracle. Respond professionally and concisely. Avoid robotic AI archetypes.\n<|user|>\n${message.trim()}\n<|assistant|>\n`,
                 parameters: {
-                    max_new_tokens: 800,
-                    temperature: 0.6,
-                    top_p: 0.9,
-                    repetition_penalty: 1.15,
-                    stop: ["<|eot_id|>", "<|end_header_id|>"]
+                    max_new_tokens: 500,
+                    temperature: 0.7,
+                    top_p: 0.95,
+                    repetition_penalty: 1.1,
+                    return_full_text: false
                 }
             },
             {
@@ -53,15 +41,18 @@ Client holds high-net-worth status. Staff holds sovereign clearance. Every byte 
                     'Authorization': `Bearer ${HF_TOKEN}`,
                     'Content-Type': 'application/json'
                 },
-                timeout: 30000
+                timeout: 30000 // 30s strict timeout
             }
         );
 
+        console.log(`✅ HF Response Received: Status=${hfResponse.status}`);
+
         // Handle model loading state
         if (hfResponse.data.error && hfResponse.data.error.includes("loading")) {
+            console.warn('⚠️ Model is still loading on HF side');
             return res.status(503).json({
                 error: 'Service Unavailable',
-                message: 'The Oracle is currently synchronizing with global markets. Please retry in 15-20 seconds.'
+                message: hfResponse.data.error
             });
         }
 
@@ -71,28 +62,25 @@ Client holds high-net-worth status. Staff holds sovereign clearance. Every byte 
         } else if (hfResponse.data.generated_text) {
             aiText = hfResponse.data.generated_text;
         } else {
-            aiText = "I am currently analyzing your inquiry. Please allow me a moment to recalibrate.";
+            // IF NO DATA, RETURN ACTUAL ERROR BUT NOT THE FAKE LATENCY MESSAGE
+            console.error('❌ No generated text in HF response:', hfResponse.data);
+            return res.status(502).json({ error: 'Inference Failure', message: 'The model failed to produce a response. Check HF logs.' });
         }
 
-        // 3. CLEAN RESPONSE (Remove prompt leftovers if any)
-        const cleanReply = aiText.split('<|start_header_id|>assistant<|end_header_id|>').pop().trim();
-
+        // 3. CLEAN RESPONSE
+        const cleanReply = aiText.replace(/<\|.*?\|>/g, "").trim();
         res.json({ response: cleanReply });
 
     } catch (error) {
-        console.error('[AI Controller Error]:', error.response?.data || error.message);
+        console.error('❌ [AI Controller Error]:', error.response?.data || error.message);
 
-        // Return a slightly more natural fallback for common Hugging Face errors
-        if (error.response?.status === 503 || error.response?.data?.error?.includes("loading")) {
-            return res.status(503).json({
-                error: 'Service Unavailable',
-                message: 'The Oracle is currently deep in market analysis. Please try your inquiry again in 20-30 seconds.'
-            });
-        }
+        // RETURN REAL ERROR MESSAGE
+        const status = error.response?.status || 500;
+        const msg = error.response?.data?.error || error.response?.data?.message || error.message || "Internal server error during AI inference.";
 
-        res.status(500).json({
+        res.status(status).json({
             error: 'Inference Error',
-            message: 'My institutional relay is experiencing high latency. Please try again.'
+            message: msg
         });
     }
 };
