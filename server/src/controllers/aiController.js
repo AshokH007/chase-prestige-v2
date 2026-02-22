@@ -30,11 +30,12 @@ exports.chat = async (req, res, next) => {
             {
                 model: MODEL_ID,
                 messages: [
-                    { role: "system", content: "You are the Chase Prestige Oracle, a polite and professional banking assistant. Provide comprehensive, helpful, and clear responses." },
+                    { role: "system", content: "You are the Chase Prestige Oracle, an elite institutional banking assistant. Be highly professional, direct, and concise. Advise the user with precision. Do not provide generic templates or example questions unless explicitly requested." },
                     { role: "user", content: message.trim() }
                 ],
-                max_tokens: 1024,
-                temperature: 0.7,
+                max_tokens: 2048,
+                temperature: 0.5,
+                top_p: 0.9,
                 stream: false
             },
             {
