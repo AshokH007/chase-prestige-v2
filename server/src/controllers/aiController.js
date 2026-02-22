@@ -50,9 +50,22 @@ exports.chat = async (req, res, next) => {
 
         // 3. PARSE RESPONSE
         if (hfResponse.data?.choices?.[0]?.message?.content) {
-            const aiReply = hfResponse.data.choices[0].message.content.trim();
+            let aiReply = hfResponse.data.choices[0].message.content.trim();
 
-            console.log(`📝 AI Success: ${aiReply.substring(0, 50)}...`);
+            console.log(`📝 Raw AI Response (Length: ${aiReply.length})`);
+
+            // STRIP INTERNAL THINKING BLOCKS SAFELY
+            // 1. Remove closed blocks
+            aiReply = aiReply.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+            // 2. Remove trailing unclosed tags (occurs if response is truncated or ongoing)
+            aiReply = aiReply.replace(/<think>[\s\S]*$/gi, "").trim();
+
+            if (!aiReply) {
+                console.warn('⚠️ Cleaned AI reply is empty after stripping <think> tags.');
+                aiReply = "The Institutional Oracle is finalizing its analysis. Please rephrase for a more specific focus.";
+            }
+
+            console.log(`✅ AI Success (Cleaned): ${aiReply.substring(0, 50)}...`);
             res.json({ response: aiReply });
         } else {
             console.error('❌ Unexpected Router Response Format:', hfResponse.data);
