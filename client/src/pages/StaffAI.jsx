@@ -2,19 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import {
-    Sparkles,
     Send,
     Bot,
     User,
-    BarChart3,
-    ShieldAlert,
-    Globe2,
-    ChevronRight,
-    Loader2,
+    Shield,
     Zap,
+    Loader2,
     Cpu,
-    Database,
-    Fingerprint
+    Fingerprint,
+    Globe2,
+    Database
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -51,7 +48,7 @@ const StaffAI = () => {
         setProcessingStep('Kernel Initialization...');
 
         try {
-            // Simulated high-tech processing steps
+            // Simulated institutional processing steps
             setTimeout(() => setProcessingStep('Querying Asset Silos...'), 800);
             setTimeout(() => setProcessingStep('Verifying Institutional KYC...'), 1600);
             setTimeout(() => setProcessingStep('Cross-Referencing Compliance...'), 2400);
@@ -63,8 +60,6 @@ const StaffAI = () => {
                 setMessages(prev => [...prev, {
                     role: 'bot',
                     content: res.data.response,
-                    isSimulated: res.data.isSimulated,
-                    model: res.data.model,
                     timestamp: new Date()
                 }]);
                 setIsLoading(false);
@@ -82,109 +77,106 @@ const StaffAI = () => {
     };
 
     const suggestions = [
-        { label: "Summarize total treasury liquidity", icon: BarChart3 },
-        { label: "Identify high-risk compliance flags", icon: ShieldAlert },
-        { label: "Analytic report on asset distribution", icon: Globe2 }
+        { label: "Summarize total treasury liquidity" },
+        { label: "Identify high-risk compliance flags" },
+        { label: "Analytic report on asset distribution" }
     ];
 
     return (
-        <div className="h-screen max-h-[900px] min-h-[600px] flex flex-col p-4 lg:p-10 animate-in fade-in zoom-in-95 duration-1000 max-w-6xl mx-auto w-full relative">
-            {/* FLOATING STAFF CLEARANCE BADGE */}
-            <div className="absolute top-10 right-10 hidden xl:flex flex-col items-end gap-2 animate-in slide-in-from-right-10 duration-1000">
-                <div className="px-4 py-2 bg-white/50 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-[#C8AA6E] animate-pulse"></div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Institutional Access: SOVEREIGN V</span>
-                </div>
-                <div className="px-4 py-2 bg-[#000B1E] rounded-2xl shadow-xl flex items-center gap-3">
-                    <Fingerprint className="text-[#C8AA6E]" size={14} />
-                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-white">Officer: 004-CP Verified</span>
-                </div>
-            </div>
-
+        <div className="h-screen flex flex-col bg-[#F7F6F3] font-sans antialiased animate-in fade-in duration-1000">
             {/* MINIMAL STAFF HEADER */}
-            <div className="mb-12 text-center">
-                <div className="inline-flex items-center gap-6 mb-4">
-                    <div className="relative group">
-                        <div className="absolute -inset-1 bg-[#C8AA6E]/20 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
-                        <div className="relative p-3 bg-[#C8AA6E] rounded-2xl border border-white/10 shadow-2xl flex items-center justify-center">
-                            <Zap className="text-white fill-white" size={24} />
-                        </div>
+            <header className="py-8 px-6 lg:px-12 flex items-center justify-between border-b border-black/[0.03] bg-[#F7F6F3]">
+                <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-[#000B1E] rounded-xl flex items-center justify-center text-[#C8AA6E] shadow-sm">
+                        <Zap size={20} />
                     </div>
-                    <div className="text-left">
-                        <h2 className="text-4xl font-bold text-[#000B1E] tracking-tight font-['Playfair_Display']">Institutional <span className="text-[#C8AA6E]">Oracle</span></h2>
-                        <div className="flex items-center gap-2 mt-1">
-                            <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-slate-400">Command & Analysis Terminal</span>
-                            <span className="px-1.5 py-0.5 bg-slate-100 text-[#000B1E] text-[8px] font-black uppercase tracking-widest rounded border border-slate-200">Staff</span>
-                        </div>
+                    <div>
+                        <h1 className="text-xl font-bold text-[#000B1E] tracking-tight font-['Playfair_Display']">Institutional <span className="text-[#C8AA6E]">Oracle</span></h1>
+                        <p className="text-[9px] uppercase tracking-[0.2em] font-black text-slate-400 text-black">Control Terminal • Staff</p>
                     </div>
                 </div>
-            </div>
 
-            <div className="flex-1 flex flex-col items-center min-h-0">
-                {/* TRANSFORMED CENTERED COMMAND ARENA */}
-                <div className="w-full max-w-4xl flex-1 flex flex-col bg-[#000B1E] rounded-[3rem] shadow-[0_40px_80px_-20px_rgba(0,11,30,0.5)] border border-white/5 overflow-hidden relative">
+                <div className="flex items-center gap-6">
+                    <div className="hidden sm:flex items-center gap-2 px-4 py-1.5 bg-[#000B1E] rounded-full border border-white/10 shadow-lg">
+                        <Fingerprint className="text-[#C8AA6E]" size={12} />
+                        <span className="text-[9px] font-black text-white uppercase tracking-widest leading-none">Officer: 004-CP Verified</span>
+                    </div>
+                </div>
+            </header>
 
-                    {/* Dark Mode Decor - POINT-EVENTS-NONE FIXED */}
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-[#C8AA6E]/5 rounded-full blur-[120px] -mr-48 -mt-48 opacity-40 pointer-events-none"></div>
-                    <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/5 rounded-full blur-[100px] -ml-40 -mb-40 opacity-30 pointer-events-none"></div>
+            {/* FULL-HEIGHT CONVERSATION CORE */}
+            <div className="flex-1 flex flex-col overflow-hidden relative">
 
-                    {/* Messages Area */}
-                    <div className="flex-1 overflow-y-auto p-8 lg:p-14 space-y-12 custom-scrollbar relative z-10 scroll-smooth pb-32 lg:pb-40">
+                {/* Messages Area */}
+                <div className="flex-1 overflow-y-auto custom-scrollbar scroll-smooth">
+                    <div className="max-w-[820px] mx-auto px-6 lg:px-0 py-16 space-y-16">
                         {messages.map((msg, idx) => (
-                            <div key={idx} className={clsx("flex gap-8 group animate-in slide-in-from-bottom-6 duration-700", msg.role === 'user' ? 'flex-row-reverse' : '')}>
+                            <div key={idx} className={clsx(
+                                "flex gap-8 group animate-in slide-in-from-bottom-2 duration-700",
+                                msg.role === 'user' ? 'flex-row-reverse' : ''
+                            )}>
+                                {/* Minimal Avatar Area */}
                                 <div className={clsx(
-                                    "w-13 h-13 rounded-2xl flex items-center justify-center shrink-0 shadow-2xl border transition-all duration-500 group-hover:rotate-12",
+                                    "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-all duration-500",
                                     msg.role === 'bot'
-                                        ? "bg-gradient-to-br from-[#C8AA6E] to-[#B6965E] text-white border-white/20"
-                                        : "bg-white/5 text-slate-400 border-white/10"
+                                        ? "bg-white text-[#C8AA6E] border-slate-200 shadow-sm"
+                                        : "bg-[#000B1E] text-slate-400 border-transparent shadow-md"
                                 )}>
-                                    {msg.role === 'bot' ? <Cpu size={26} /> : <User size={26} />}
+                                    {msg.role === 'bot' ? <Cpu size={20} /> : <User size={20} />}
                                 </div>
+
+                                {/* Message Bubble Container */}
                                 <div className={clsx(
-                                    "max-w-[80%] lg:max-w-[75%] p-9 rounded-[2.5rem] text-sm leading-[1.8] shadow-2xl relative transition-all",
-                                    msg.role === 'bot'
-                                        ? "bg-white/[0.04] text-slate-200 border border-white/10 rounded-tl-none backdrop-blur-3xl font-medium"
-                                        : "bg-[#C8AA6E] text-white rounded-tr-none font-bold"
+                                    "max-w-[80%] flex flex-col",
+                                    msg.role === 'user' ? "items-end" : "items-start"
                                 )}>
-                                    {msg.content}
+                                    <div className={clsx(
+                                        "p-6 lg:p-7 rounded-2xl text-[15px] leading-relaxed transition-all duration-300",
+                                        msg.role === 'bot'
+                                            ? "bg-white text-slate-800 rounded-tl-none font-medium border border-black/[0.03] shadow-[0_4px_12px_-4px_rgba(0,0,0,0.03)]"
+                                            : "bg-[#F2EDE4] text-slate-800 rounded-tr-none font-semibold shadow-[0_4px_12px_-4px_rgba(200,170,110,0.1)]"
+                                    )}>
+                                        {msg.content}
+                                    </div>
 
                                     <div className={clsx(
-                                        "text-[9px] mt-6 flex items-center gap-4 font-black uppercase tracking-[0.3em] opacity-30 group-hover:opacity-100 transition-opacity",
-                                        msg.role === 'bot' ? "text-slate-400" : "text-white"
+                                        "text-[9px] mt-4 flex items-center gap-3 font-black uppercase tracking-[0.2em] opacity-40 group-hover:opacity-100 transition-opacity",
+                                        msg.role === 'bot' ? "text-slate-500" : "text-slate-600"
                                     )}>
                                         {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        {msg.model && <span>• {msg.model.split('/').pop()}</span>}
-                                        <span>• {msg.role === 'bot' ? 'SECURED STREAM' : 'SYSTEM CMD'}</span>
+                                        <span>• {msg.role === 'bot' ? 'INSTITUTIONAL STREAM' : 'OFFICER COMMAND'}</span>
                                     </div>
                                 </div>
                             </div>
                         ))}
 
-                        {/* HIGH-TECH PROCESSING STATE */}
+                        {/* Institutional Processing State */}
                         {processingStep && (
-                            <div className="flex gap-8">
-                                <div className="w-13 h-13 rounded-2xl bg-[#C8AA6E] flex items-center justify-center shrink-0 shadow-2xl border border-white/20">
-                                    <Loader2 size={26} className="text-white animate-spin-slow" />
+                            <div className="flex gap-8 animate-in fade-in duration-500">
+                                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 border border-slate-200 shadow-sm">
+                                    <Loader2 size={16} className="text-[#C8AA6E] animate-spin" />
                                 </div>
-                                <div className="flex items-center">
-                                    <span className="text-[11px] font-black uppercase tracking-[0.4em] text-[#C8AA6E] animate-pulse">{processingStep}</span>
+                                <div className="flex items-center h-10">
+                                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C8AA6E]">{processingStep}</span>
                                 </div>
                             </div>
                         )}
-                        <div ref={messagesEndRef} />
+                        <div ref={messagesEndRef} className="h-40" />
                     </div>
+                </div>
 
-                    {/* INPUT TERMINAL - STREAMLINED */}
-                    <div className="p-8 lg:p-12 bg-black/40 border-t border-white/5 backdrop-blur-3xl relative w-full">
+                {/* INSTITUTIONAL INPUT CONSOLE */}
+                <div className="bg-[#F7F6F3]/95 backdrop-blur-xl border-t border-black/[0.03] pt-6 pb-12">
+                    <div className="max-w-[820px] mx-auto px-6 lg:px-0">
 
-                        {/* MINIMAL PILL SUGGESTIONS */}
+                        {/* Elegant Operational Protocols */}
                         {!input && messages.length === 1 && (
-                            <div className="absolute -top-14 left-1/2 -translate-x-1/2 flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-700 w-full justify-center px-6">
+                            <div className="flex flex-wrap gap-2 mb-8 animate-in fade-in slide-in-from-bottom-1 duration-1000">
                                 {suggestions.map((item, idx) => (
                                     <button
                                         key={idx}
                                         onClick={() => setInput(item.label)}
-                                        className="px-5 py-2.5 bg-[#000B1E]/80 backdrop-blur-md border border-white/10 rounded-full text-[9px] font-black uppercase tracking-widest text-[#C8AA6E] hover:border-[#C8AA6E] hover:bg-[#000B1E] transition-all shadow-xl hover:shadow-amber-900/20 hover:-translate-y-0.5"
+                                        className="px-5 py-2.5 bg-white border border-slate-200 rounded-full text-[10px] font-bold text-slate-500 hover:border-[#C8AA6E] hover:text-[#C8AA6E] transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
                                     >
                                         {item.label}
                                     </button>
@@ -192,38 +184,38 @@ const StaffAI = () => {
                             </div>
                         )}
 
-                        <form onSubmit={handleSend} className="relative flex gap-4 items-center">
-                            <div className="relative flex-1 group">
-                                <div className="absolute -inset-1 bg-[#C8AA6E]/10 rounded-[2.5rem] opacity-0 group-within:opacity-100 blur transition-opacity pointer-events-none"></div>
+                        <form onSubmit={handleSend} className="relative group flex items-center gap-4">
+                            <div className="relative flex-1">
                                 <input
                                     type="text"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
-                                    placeholder="ISSUE AN INSTITUTIONAL COMMAND..."
-                                    className="w-full bg-white/5 text-white pl-10 pr-24 py-8 rounded-[2.5rem] border border-white/10 focus:outline-none focus:ring-2 focus:ring-[#C8AA6E]/50 transition-all font-mono text-[11px] tracking-widest placeholder:text-slate-700 uppercase font-black relative z-20"
+                                    placeholder="Issue an Institutional Command..."
+                                    className="w-full bg-white text-slate-900 pl-8 pr-20 py-7 rounded-2xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-[#C8AA6E] focus:border-[#C8AA6E] transition-all text-sm font-medium placeholder:text-slate-400 shadow-sm uppercase tracking-widest font-mono text-[11px]"
                                 />
-                                <button
-                                    type="submit"
-                                    disabled={!input.trim() || isLoading}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 w-16 h-16 bg-[#C8AA6E] text-white rounded-2xl flex items-center justify-center hover:bg-[#D4B982] transition-all active:scale-95 disabled:opacity-20 shadow-2xl shadow-amber-900/40 z-30"
-                                >
-                                    <Send size={24} />
-                                </button>
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                                    <button
+                                        type="submit"
+                                        disabled={!input.trim() || isLoading}
+                                        className="w-12 h-12 bg-[#000B1E] text-white rounded-xl flex items-center justify-center hover:bg-[#C8AA6E] transition-all active:scale-95 disabled:opacity-20 shadow-lg"
+                                    >
+                                        <Send size={18} />
+                                    </button>
+                                </div>
                             </div>
                         </form>
-                    </div>
-                </div>
 
-                {/* INSTITUTIONAL STATUS FOOTNOTE */}
-                <div className="mt-8 flex items-center gap-6 opacity-20 hover:opacity-100 transition-opacity">
-                    <div className="flex items-center gap-2">
-                        <Database className="text-[#C8AA6E]" size={12} />
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Synapse Integrity: 99.8%</span>
-                    </div>
-                    <div className="w-1 h-1 rounded-full bg-slate-700"></div>
-                    <div className="flex items-center gap-2">
-                        <Globe2 className="text-[#C8AA6E]" size={12} />
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Global Ledger Ready</span>
+                        <div className="mt-8 flex items-center justify-center gap-6 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
+                            <div className="flex items-center gap-2">
+                                <Database size={10} />
+                                <span className="text-[9px] font-black uppercase tracking-[0.2em]">Synapse Integrity: 99.8%</span>
+                            </div>
+                            <div className="w-1 h-1 rounded-full bg-slate-300"></div>
+                            <div className="flex items-center gap-2">
+                                <Globe2 size={10} />
+                                <span className="text-[9px] font-black uppercase tracking-[0.2em]">Sovereign Clearance: V-Level</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -232,4 +224,3 @@ const StaffAI = () => {
 };
 
 export default StaffAI;
-

@@ -41,13 +41,17 @@ const Layout = ({ children }) => {
     };
 
     const isLoginPage = location.pathname === '/login';
+    const isAIRoute = location.pathname === '/concierge' || location.pathname === '/staff/oracle';
 
     if (isLoginPage) {
         return <div className="min-h-screen bg-slate-50 font-sans">{children}</div>;
     }
 
     return (
-        <div className="min-h-screen bg-[#F9FAFB] flex font-sans text-slate-900">
+        <div className={clsx(
+            "min-h-screen flex font-sans text-slate-900",
+            isAIRoute ? "bg-[#F7F6F3]" : "bg-[#F9FAFB]"
+        )}>
             {user && (
                 <Sidebar
                     role={user.role}
@@ -56,7 +60,7 @@ const Layout = ({ children }) => {
             )}
 
             <div className={`flex-1 flex flex-col ${user ? 'pl-72' : ''}`}>
-                {user && (
+                {user && !isAIRoute && (
                     <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-30 px-10 flex items-center justify-between">
                         <GlobalSearch API_BASE={API_BASE} />
 
@@ -141,11 +145,15 @@ const Layout = ({ children }) => {
                     </header>
                 )}
 
-                <main className={`p-10 ${!user ? 'flex items-center justify-center min-vh-100' : ''}`}>
+                <main className={clsx(
+                    "flex-1",
+                    !isAIRoute && "p-10",
+                    !user && "flex items-center justify-center min-vh-100"
+                )}>
                     {children}
                 </main>
 
-                {user && (
+                {user && !isAIRoute && (
                     <footer className="mt-auto py-8 px-10 border-t border-slate-100 bg-white/50">
                         <div className="flex justify-between items-center text-xs font-bold text-slate-400 uppercase tracking-widest">
                             <p>© {new Date().getFullYear()} Chase Prestige Global. Member FDIC.</p>
