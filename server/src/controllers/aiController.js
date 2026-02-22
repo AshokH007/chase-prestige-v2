@@ -52,8 +52,8 @@ exports.chat = async (req, res, next) => {
         if (hfResponse.data && hfResponse.data.choices && hfResponse.data.choices.length > 0) {
             let aiReply = hfResponse.data.choices[0].message.content;
 
-            // STRIP INTERNAL THINKING BLOCKS (e.g. <think>...</think>)
-            aiReply = aiReply.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+            // STRIP INTERNAL THINKING BLOCKS (e.g. <think>...</think> or unclosed <think>...)
+            aiReply = aiReply.replace(/<think>[\s\S]*?(?:<\/think>|$)/gi, "").trim();
 
             res.json({ response: aiReply });
         } else {
