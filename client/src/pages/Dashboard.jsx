@@ -131,39 +131,57 @@ const Dashboard = ({ initialView = 'overview' }) => {
                     </div>
                 </div>
             )}
-            {/* Account Header */}
-            <div className="mb-12">
-                <div className="flex items-center gap-2 mb-2">
-                    <span className="w-2 h-2 rounded-full bg-[#C8AA6E]"></span>
-                    <h1 className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400">
-                        Private Banking Portfolio
-                    </h1>
-                </div>
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            {/* Dashboard Header - Densified */}
+            <div className="mb-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h2 className="text-4xl font-bold text-[#000B1E] tracking-tight font-['Playfair_Display']">
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#C8AA6E]"></span>
+                            <h1 className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
+                                Global Wealth Portfolio
+                            </h1>
+                        </div>
+                        <h2 className="text-3xl font-bold text-[#000B1E] tracking-tight font-['Playfair_Display']">
                             {user?.fullName}
                         </h2>
-                        <p className="text-slate-400 mt-1 font-bold text-[10px] uppercase tracking-widest">
-                            Portfolio ID: <span className="text-[#000B1E]">{user?.customerId}</span>
-                        </p>
                     </div>
-                    <div className="bg-white px-8 py-5 rounded-2xl border border-slate-100 shadow-sm self-start md:self-auto flex items-center gap-4">
-                        <div>
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-0.5">
-                                Account Number
-                            </p>
-                            <p className="text-sm font-mono font-bold text-[#000B1E] tracking-widest">
-                                {isBalanceVisible ? accountData?.account_number || "ACC-••••-••••" : "ACC-••••-••••"}
-                            </p>
-                        </div>
-                        <div
-                            onClick={() => !isBalanceVisible && setIsVerifyingPin(true)}
-                            className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-300 hover:text-[#C8AA6E] transition-colors cursor-pointer border border-slate-100"
-                        >
-                            {isBalanceVisible ? <Shield size={16} /> : <Eye size={16} />}
+
+                    <div className="flex items-center gap-4">
+                        <div className="bg-white px-5 py-3 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4">
+                            <div>
+                                <p className="text-[8px] font-bold uppercase tracking-wider text-slate-300 mb-0.5">Account Identification</p>
+                                <p className="text-xs font-mono font-bold text-[#000B1E] tracking-widest leading-none">
+                                    {isBalanceVisible ? accountData?.account_number || "ACC-••••-••••" : "ACC-••••-••••"}
+                                </p>
+                            </div>
+                            <div
+                                onClick={() => !isBalanceVisible && setIsVerifyingPin(true)}
+                                className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-300 hover:text-[#C8AA6E] transition-colors cursor-pointer border border-slate-100"
+                            >
+                                {isBalanceVisible ? <Shield size={14} /> : <Eye size={14} />}
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Quick Metrics Grid - NEW */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div className="metric-card">
+                    <p className="metric-label">Credit Stratum</p>
+                    <p className="metric-value">842 <span className="text-[8px] text-emerald-500 ml-1">+4 pts</span></p>
+                </div>
+                <div className="metric-card">
+                    <p className="metric-label">Prestige Rewards</p>
+                    <p className="metric-value">1.4M <span className="text-[8px] text-[#C8AA6E] ml-1">Pts</span></p>
+                </div>
+                <div className="metric-card">
+                    <p className="metric-label">Portfolio Yield</p>
+                    <p className="metric-value">12.4% <span className="text-[8px] text-emerald-500 ml-1">YTD</span></p>
+                </div>
+                <div className="metric-card">
+                    <p className="metric-label">Market Index</p>
+                    <p className="metric-value">$5,842.10 <span className="text-[8px] text-rose-500 ml-1">-0.1%</span></p>
                 </div>
             </div>
 
@@ -192,25 +210,25 @@ const Dashboard = ({ initialView = 'overview' }) => {
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                     <div className="lg:col-span-2 space-y-10">
-                        {/* Prestige Balance Card */}
-                        <div className="bg-[#000B1E] rounded-[3rem] p-12 text-white shadow-2xl shadow-indigo-900/40 relative overflow-hidden group border border-white/5">
+                        {/* Prestige Balance Card - Densified */}
+                        <div className="bg-[#000B1E] rounded-[2.5rem] p-10 text-white shadow-2xl shadow-indigo-900/40 relative overflow-hidden group border border-white/5">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-[#C8AA6E]/5 rounded-full -mr-32 -mt-32 blur-3xl transition-all group-hover:bg-[#C8AA6E]/10 duration-1000"></div>
 
                             <div className="relative z-10">
-                                <div className="flex justify-between items-start mb-12">
+                                <div className="flex justify-between items-start mb-8">
                                     <div>
-                                        <p className="text-[#C8AA6E] font-bold uppercase tracking-[0.25em] text-[10px] mb-2 flex items-center gap-2">
-                                            <Shield size={12} />
-                                            Total Liquidity
+                                        <p className="text-[#C8AA6E] font-bold uppercase tracking-[0.25em] text-[8px] mb-2 flex items-center gap-2">
+                                            <Shield size={10} />
+                                            Liquidity Reserve
                                         </p>
-                                        <div className="flex items-baseline gap-3 group/balance relative">
-                                            <span className="text-3xl text-[#C8AA6E] font-light font-['Playfair_Display']">$</span>
-                                            <span className="text-7xl font-bold tracking-tighter font-['Playfair_Display'] block min-w-[300px]">
+                                        <div className="flex items-baseline gap-2 group/balance relative">
+                                            <span className="text-2xl text-[#C8AA6E] font-light font-['Playfair_Display']">$</span>
+                                            <span className="text-5xl font-bold tracking-tighter font-['Playfair_Display'] block">
                                                 {isBalanceVisible ? (
                                                     accountBalance !== undefined ? (
                                                         parseFloat(accountBalance).toLocaleString(undefined, { minimumFractionDigits: 2 })
                                                     ) : (
-                                                        <span className="animate-pulse opacity-50">SYNCING...</span>
+                                                        <span className="animate-pulse opacity-50">SYNC...</span>
                                                     )
                                                 ) : (
                                                     "••••••"
@@ -222,86 +240,99 @@ const Dashboard = ({ initialView = 'overview' }) => {
                                                     onClick={() => setIsVerifyingPin(true)}
                                                     className="absolute inset-0 flex items-center justify-center bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 group-hover:bg-white/10 transition-all overflow-hidden"
                                                 >
-                                                    <div className="flex items-center gap-3">
-                                                        <Eye size={20} className="text-[#C8AA6E]" />
-                                                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E]">Reveal Wealth</span>
-                                                    </div>
+                                                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8AA6E]">Reveal Assets</span>
                                                 </button>
                                             )}
                                         </div>
                                     </div>
                                     <div className="bg-white/5 p-4 rounded-2xl border border-white/10 backdrop-blur-sm">
-                                        <svg className="w-8 h-8 text-[#C8AA6E]" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.82v-1.91c-1.54-.13-3.03-.66-4.32-1.58l1.32-2.11c1.07.72 2.3 1.14 3.51 1.21.94.05 1.7-.19 2.06-.55.33-.33.39-.77.21-1.22-.3-.72-1.12-1.2-3.15-2.06-2.26-.96-3.76-2.03-4.14-3.87-.21-1.01-.06-2 .5-2.85.69-1.04 1.83-1.68 3.09-1.89V3h2.82v1.89c1.23.1 2.36.42 3.33.94l-1.14 2.1c-.81-.4-1.63-.61-2.45-.63-.94-.03-1.64.21-2.02.6-.28.29-.38.64-.28 1.07.13.51.59.95 2.1 1.6 2.37.99 3.86 2.01 4.3 3.93.18.79.16 1.74-.1 2.51-.57 1.61-1.92 2.72-3.88 2.98z" />
-                                        </svg>
+                                        <TrendingUp className="w-6 h-6 text-[#C8AA6E]" />
                                     </div>
                                 </div>
 
-                                <div className="flex gap-6 items-center">
-                                    <button onClick={() => setShowTransferModal(true)} className="btn-prestige-gold">
-                                        Initiate Transfer
+                                <div className="flex gap-4 items-center">
+                                    <button onClick={() => setShowTransferModal(true)} className="px-6 py-3 rounded-xl bg-[#C8AA6E] text-white text-[10px] font-bold uppercase tracking-widest hover:bg-[#B6965E] transition-all">
+                                        Swift Transfer
                                     </button>
-                                    <button onClick={() => setShowStatementsModal(true)} className="px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold uppercase tracking-widest transition-all backdrop-blur-md">
-                                        Statements
+                                    <button onClick={() => setShowStatementsModal(true)} className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-bold uppercase tracking-widest transition-all">
+                                        Ledger
                                     </button>
                                     <div className="ml-auto flex items-center gap-2">
-                                        <div className={clsx("w-2 h-2 rounded-full", isBalanceVisible ? "bg-emerald-500" : "bg-amber-500 animate-pulse")}></div>
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#C8AA6E]/80">
-                                            {isBalanceVisible ? "Audited Visibility" : "Shielded Account"}
+                                        <div className={clsx("w-1.5 h-1.5 rounded-full", isBalanceVisible ? "bg-emerald-500" : "bg-amber-500 animate-pulse")}></div>
+                                        <span className="text-[8px] font-bold uppercase tracking-widest text-[#C8AA6E]/80">
+                                            {isBalanceVisible ? "Active Session" : "Vault Shielded"}
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Recent Transactions Snippet */}
+                        {/* Recent Transactions Snippet - Densified */}
                         <div className="card-prestige !p-0 overflow-hidden shadow-2xl shadow-slate-200/50">
-                            <div className="p-10 border-b border-slate-50 flex justify-between items-center bg-slate-50/20">
-                                <h3 className="text-[#000B1E] font-bold text-xl tracking-tight font-['Playfair_Display']">Recent Settlement Records</h3>
+                            <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/20">
+                                <h3 className="text-[#000B1E] font-bold text-lg tracking-tight font-['Playfair_Display']">Settlement Ledger</h3>
+                                <button onClick={() => navigate('/transactions')} className="text-[10px] font-bold uppercase tracking-widest text-[#C8AA6E] hover:underline">View All</button>
                             </div>
-                            <div className="px-10 pb-10">
-                                <TransactionList transactions={Array.isArray(transactions) ? transactions.slice(0, 5) : []} currentUserEmail={user?.email} />
+                            <div className="px-8 pb-8">
+                                <TransactionList transactions={Array.isArray(transactions) ? transactions.slice(0, 4) : []} currentUserEmail={user?.email} compact={true} />
                             </div>
                         </div>
                     </div>
 
-                    {/* Sidebar Metrics */}
-                    <div className="space-y-8">
-                        <div className="card-prestige group">
-                            <div className="flex items-center gap-4 mb-8">
-                                <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-[#C8AA6E] group-hover:bg-[#C8AA6E] group-hover:text-white transition-all duration-300">
-                                    <Lock className="w-5 h-5" />
-                                </div>
-                                <h3 className="text-[#000B1E] font-bold text-lg tracking-tight font-['Playfair_Display']">Security Matrix</h3>
+                    {/* Sidebar Metrics & NEW Market Watch */}
+                    <div className="space-y-6">
+                        {/* Market Watch Widget */}
+                        <div className="card-prestige !p-6">
+                            <h3 className="text-[#000B1E] font-bold text-sm tracking-tight font-['Playfair_Display'] mb-4 flex items-center justify-between">
+                                Market Watch
+                                <span className="text-[8px] text-emerald-500 font-bold uppercase">Live</span>
+                            </h3>
+                            <div className="space-y-3">
+                                {[
+                                    { symbol: "S&P 500", price: "5,842.10", change: "-0.12%", color: "text-rose-500" },
+                                    { symbol: "NASDAQ", price: "18,674.30", change: "+0.45%", color: "text-emerald-500" },
+                                    { symbol: "BTC/USD", price: "98,241.00", change: "+2.10%", color: "text-emerald-500" },
+                                    { symbol: "GOLD", price: "2,741.50", change: "-0.05%", color: "text-rose-500" }
+                                ].map((stock) => (
+                                    <div key={stock.symbol} className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                        <span className="text-[10px] font-bold text-[#000B1E]">{stock.symbol}</span>
+                                        <div className="text-right">
+                                            <p className="text-[10px] font-bold leading-none mb-1">{stock.price}</p>
+                                            <p className={`text-[8px] font-bold ${stock.color}`}>{stock.change}</p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                            <div className="space-y-5">
+                        </div>
+
+                        <div className="card-prestige !p-6 group">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-8 h-8 bg-slate-50 rounded-xl flex items-center justify-center text-[#C8AA6E] group-hover:bg-[#C8AA6E] group-hover:text-white transition-all duration-300">
+                                    <Lock className="w-4 h-4" />
+                                </div>
+                                <h3 className="text-[#000B1E] font-bold text-sm tracking-tight font-['Playfair_Display']">Security</h3>
+                            </div>
+                            <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-xs text-slate-500 font-semibold">Balance Privacy</p>
-                                    <span className={clsx("text-[10px] font-bold uppercase tracking-widest", isBalanceVisible ? "text-[#C8AA6E]" : "text-emerald-500")}>
-                                        {isBalanceVisible ? "Visible" : "Shielded"}
+                                    <p className="text-[10px] text-slate-500 font-bold">Privacy</p>
+                                    <span className={clsx("text-[8px] font-bold uppercase tracking-widest", isBalanceVisible ? "text-[#C8AA6E]" : "text-emerald-500")}>
+                                        {isBalanceVisible ? "Active" : "Shielded"}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <p className="text-xs text-slate-500 font-semibold">Session Token</p>
-                                    <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">{balanceToken ? "Active" : "Standard"}</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <p className="text-xs text-slate-500 font-semibold">Institutional ID</p>
-                                    <span className="text-[10px] font-bold text-[#C8AA6E] uppercase tracking-widest">Verified</span>
+                                    <p className="text-[10px] text-slate-500 font-bold">Session</p>
+                                    <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest">{balanceToken ? "Authenticated" : "Standard"}</span>
                                 </div>
                             </div>
-                            <button className="w-full mt-10 py-4 rounded-2xl bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:bg-slate-100 transition-all flex items-center justify-center gap-2">
-                                Audit Security Log <ChevronRight size={12} />
-                            </button>
                         </div>
 
-                        <div className="bg-[#C8AA6E] rounded-[2.5rem] p-10 text-white shadow-xl shadow-amber-900/10 relative overflow-hidden group">
+                        <div className="bg-[#C8AA6E] rounded-[2rem] p-8 text-white shadow-xl shadow-amber-900/10 relative overflow-hidden group">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-                            <h3 className="text-lg font-bold mb-6 font-['Playfair_Display']">Prestige Advantage</h3>
-                            <p className="text-xs text-white/80 font-medium leading-relaxed mb-8">
-                                Experience exclusive benefits with Chase Prestige. Our AI-driven insights are analyzing your portfolio for optimization.
+                            <h3 className="text-sm font-bold mb-4 font-['Playfair_Display']">Prestige AI</h3>
+                            <p className="text-[10px] text-white/80 font-medium leading-relaxed mb-6 italic">
+                                "Market conditions are optimal for institutional portfolio rebalancing."
                             </p>
-                            <button className="w-full py-4 rounded-2xl bg-[#000B1E] text-white text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-black/20 hover:scale-[1.02] transition-all">Explore Benefits</button>
+                            <button onClick={() => navigate('/concierge')} className="w-full py-3 rounded-xl bg-[#000B1E] text-white text-[8px] font-bold uppercase tracking-widest shadow-lg shadow-black/20 hover:scale-[1.02] transition-all">Consult Oracle</button>
                         </div>
                     </div>
                 </div>

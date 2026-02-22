@@ -63,7 +63,7 @@ const Sidebar = ({ role = 'CLIENT', onLogout }) => {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 space-y-2">
+            <nav className="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2">
                 <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-4 px-6">
                     Menu
                 </p>
@@ -97,7 +97,13 @@ const Sidebar = ({ role = 'CLIENT', onLogout }) => {
 
             {/* Bottom Section */}
             <div className="pt-8 border-t border-white/5 space-y-2">
-                <button className="sidebar-item w-full">
+                <button
+                    onClick={() => navigate('/settings')}
+                    className={clsx(
+                        "sidebar-item w-full",
+                        location.pathname === '/settings' && "sidebar-item-active"
+                    )}
+                >
                     <Settings size={20} />
                     <span className="text-sm">Settings</span>
                 </button>

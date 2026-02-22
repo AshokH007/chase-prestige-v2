@@ -41,3 +41,29 @@
 .sidebar-item-active {
   @apply flex items-center gap-4 px-6 py-4 rounded-2xl bg-[#C8AA6E] text-white font-bold shadow-lg shadow-amber-900/20;
 }
+
+/* Premium Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full hover:bg-[#C8AA6E]/40 transition-colors;
+}
+
+/* Quick Metrics Layout */
+.metric-card {
+  @apply p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all;
+}
+
+.metric-label {
+  @apply text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1;
+}
+
+.metric-value {
+  @apply text-lg font-bold text-[#000B1E] tracking-tight;
+}
