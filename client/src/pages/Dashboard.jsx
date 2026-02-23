@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 const BUILD_VERSION = "2.5.5"; // SYNC STATE HARDENING
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import api from '../api/axios';
 import TransactionList from '../components/TransactionList';
 import TransferModal from '../components/TransferModal';
 import StatementsModal from '../components/StatementsModal';
@@ -37,16 +37,16 @@ const Dashboard = ({ initialView = 'overview' }) => {
         setIsLoading(true);
         try {
             // Independent promises for non-blocking hydration
-            const historyPromise = axios.get(`${API_BASE}/api/transactions/history`)
+            const historyPromise = api.get('/transactions/history')
                 .then(res => setTransactions(res.data))
                 .catch(err => console.error('History fetch failed', err));
 
-            const profilePromise = axios.get(`${API_BASE}/api/account/profile`)
+            const profilePromise = api.get('/account/profile')
                 .then(res => setAccountData(res.data))
                 .catch(err => console.error('Profile fetch failed', err));
 
             const balancePromise = (balanceToken && accountBalance === undefined)
-                ? axios.get(`${API_BASE}/api/account/balance`, { headers: { 'x-balance-token': balanceToken } })
+                ? api.get('/account/balance', { headers: { 'x-balance-token': balanceToken } })
                     .then(res => setAccountBalance(res.data.balance))
                     .catch(err => console.error('Balance fetch failed', err))
                 : null;
@@ -86,7 +86,7 @@ const Dashboard = ({ initialView = 'overview' }) => {
         setIsLoading(true);
         try {
             // SINGLE-PHASE SECURE LINK: Balance returned in verify response
-            const res = await axios.post(`${API_BASE}/api/account/verify-pin`, { pin: pinEntry });
+            const res = await api.post('/account/verify-pin', { pin: pinEntry });
 
             // Vault data injection
             setAccountBalance(res.data.balance);

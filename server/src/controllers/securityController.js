@@ -22,7 +22,7 @@ exports.verifyPinAndGetBalanceToken = async (req, res) => {
         if (pin !== expectedPin) {
             console.error(`[PIN_MISMATCH] Expected: ${expectedPin} | Received: ${pin} | TokenLen: ${token.length}`);
             return res.status(401).json({
-                message: `Identity Verification Failed: Strategic Key Mismatch. (Token Hash Audit: ${token.length}b)`,
+                message: `Identity Verification Failed: Strategic Key Mismatch. (Audit Context: ${token.substring(0, 10)}...${token.substring(token.length - 10)})`,
                 error: 'PIN_MISMATCH'
             });
         }

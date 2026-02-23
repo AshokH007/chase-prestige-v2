@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import api from '../api/axios';
 import {
     Send,
     Bot,
@@ -33,12 +33,20 @@ const AIConcierge = () => {
 
     const scrollToBottom = () => {
         if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+            const container = chatContainerRef.current;
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: 'smooth'
+            });
         }
     };
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        // Use a small timeout to let the DOM and animations settle
+        const timer = setTimeout(() => {
+            scrollToBottom();
+        }, 100);
+        return () => clearTimeout(timer);
     }, [messages, thinkingState]);
 
     const handleImageChange = (e) => {
@@ -81,7 +89,7 @@ const AIConcierge = () => {
         setThinkingState('Accessing Institutional Ledger...');
 
         try {
-            const res = await axios.post(`${API_BASE}/api/ai/chat`, {
+            const res = await api.post('/ai/chat', {
                 message: userMsg,
                 image: currentImage
             });
@@ -145,7 +153,7 @@ const AIConcierge = () => {
             {/* MESSAGES AREA (Scrollable) */}
             <div
                 ref={chatContainerRef}
-                className="flex-1 overflow-y-auto custom-scrollbar scroll-smooth"
+                className="flex-1 overflow-y-auto custom-scrollbar"
             >
                 <div className="max-w-[820px] mx-auto px-6 lg:px-0 py-12 space-y-12">
                     {messages.map((msg, idx) => (

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 
 const OnboardCustomerModal = ({ isOpen, onClose, onSuccess, API_BASE }) => {
     const [formData, setFormData] = useState({ fullName: '', email: '', initialDeposit: '' });
@@ -14,7 +14,7 @@ const OnboardCustomerModal = ({ isOpen, onClose, onSuccess, API_BASE }) => {
         setIsLoading(true);
         setError(null);
         try {
-            const res = await axios.post(`${API_BASE}/api/staff/create-customer`, {
+            const res = await api.post('/staff/create-customer', {
                 ...formData,
                 initialDeposit: parseFloat(formData.initialDeposit) || 0
             });

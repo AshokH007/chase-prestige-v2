@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import PrestigeMetalCard from '../components/PrestigeMetalCard';
 import { Plus, ShieldCheck, Zap, ArrowRight, Lock, Unlock } from 'lucide-react';
@@ -16,7 +16,7 @@ const Cards = () => {
 
     const fetchCards = async () => {
         try {
-            const res = await axios.get(`${API_BASE}/api/cards`);
+            const res = await api.get('/cards');
             setCards(res.data);
         } catch (err) {
             console.error('Failed to fetch cards');

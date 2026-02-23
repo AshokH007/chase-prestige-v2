@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { clsx } from 'clsx';
 import {
@@ -39,9 +39,9 @@ const Analytics = () => {
         const fetchData = async () => {
             try {
                 const [spendingRes, trendRes, distRes] = await Promise.all([
-                    axios.get(`${API_BASE}/api/analytics/spending`),
-                    axios.get(`${API_BASE}/api/analytics/trend`),
-                    axios.get(`${API_BASE}/api/analytics/distribution`)
+                    api.get('/analytics/spending'),
+                    api.get('/analytics/trend'),
+                    api.get('/analytics/distribution')
                 ]);
                 setSpendingData(spendingRes.data);
                 setTrendData(trendRes.data);

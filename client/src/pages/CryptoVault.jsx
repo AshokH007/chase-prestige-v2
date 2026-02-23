@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import api from '../api/axios';
 import {
     Shield,
     Lock,
@@ -30,7 +30,7 @@ const CryptoVault = () => {
 
     const fetchPortfolio = async () => {
         try {
-            const res = await axios.get(`${API_BASE}/api/investments`);
+            const res = await api.get('/investments');
             // Filter only Crypto assets
             const cryptoAssets = res.data.filter(a => a.type === 'CRYPTO');
             setAssets(cryptoAssets);

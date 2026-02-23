@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { X, ArrowRightLeft, ShieldAlert, CheckCircle } from 'lucide-react';
 
 const AdminTransferModal = ({ isOpen, onClose, onSuccess, API_BASE }) => {
@@ -16,7 +16,7 @@ const AdminTransferModal = ({ isOpen, onClose, onSuccess, API_BASE }) => {
         setIsLoading(true);
         setError('');
         try {
-            await axios.post(`${API_BASE}/api/staff/admin-transfer`, {
+            await api.post('/staff/admin-transfer', {
                 fromAccount,
                 toAccount,
                 amount: parseFloat(amount),

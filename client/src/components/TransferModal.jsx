@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { X, Send, User, Hash, Info } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -18,7 +18,7 @@ const TransferModal = ({ isOpen, onClose, onSuccess, API_BASE }) => {
         setError('');
 
         try {
-            await axios.post(`${API_BASE}/api/transactions/transfer`, {
+            await api.post('/transactions/transfer', {
                 receiverIdentifier: recipient,
                 amount: parseFloat(amount),
                 reference: reference || 'Institutional Transfer'

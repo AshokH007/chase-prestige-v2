@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { X, FileText, Download, TrendingDown, TrendingUp, Calendar } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -11,7 +11,7 @@ const StatementsModal = ({ isOpen, onClose, API_BASE }) => {
         if (isOpen) {
             const fetchStatements = async () => {
                 try {
-                    const res = await axios.get(`${API_BASE}/api/transactions/statements`);
+                    const res = await api.get('/transactions/statements');
                     setStatements(res.data);
                 } catch (err) {
                     console.error('Failed to fetch statements');

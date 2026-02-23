@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import api from '../api/axios';
 import { clsx } from 'clsx';
 import OnboardCustomerModal from '../components/OnboardCustomerModal';
 import FundInjectionModal from '../components/FundInjectionModal';
@@ -51,7 +51,7 @@ const WorkerDashboard = ({ initialView = 'metrics' }) => {
     const fetchCustomers = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get(`${API_BASE}/api/staff/users`);
+            const res = await api.get('/staff/users');
             setCustomers(res.data || []);
         } catch (err) {
             console.error('Failed to fetch customers');
@@ -62,7 +62,7 @@ const WorkerDashboard = ({ initialView = 'metrics' }) => {
 
     const fetchMetrics = async () => {
         try {
-            const res = await axios.get(`${API_BASE}/api/staff/metrics`);
+            const res = await api.get('/staff/metrics');
             setMetrics(res.data);
         } catch (err) {
             console.error('Failed to fetch metrics');
@@ -71,7 +71,7 @@ const WorkerDashboard = ({ initialView = 'metrics' }) => {
 
     const fetchLogs = async () => {
         try {
-            const res = await axios.get(`${API_BASE}/api/staff/logs`);
+            const res = await api.get('/staff/logs');
             setOperationalLogs(res.data || []);
         } catch (err) {
             console.error('Failed to fetch logs');
@@ -81,7 +81,7 @@ const WorkerDashboard = ({ initialView = 'metrics' }) => {
     const handleToggleStatus = async (userId, currentStatus) => {
         const nextStatus = currentStatus === 'FROZEN' ? 'ACTIVE' : 'FROZEN';
         try {
-            await axios.post(`${API_BASE}/api/staff/toggle-status/${userId}`, { status: nextStatus });
+            await api.post(`/staff/toggle-status/${userId}`, { status: nextStatus });
             fetchCustomers(); // Refresh list
         } catch (err) {
             console.error('Failed to toggle status');
@@ -90,7 +90,7 @@ const WorkerDashboard = ({ initialView = 'metrics' }) => {
 
     const fetchPendingLoans = async () => {
         try {
-            const res = await axios.get(`${API_BASE}/api/staff/loans/queue`);
+            const res = await api.get('/staff/loans/queue');
             setPendingLoans(res.data);
         } catch (err) {
             console.error('Failed to fetch credit queue');
@@ -99,7 +99,7 @@ const WorkerDashboard = ({ initialView = 'metrics' }) => {
 
     const handleLoanDecision = async (loanId, status) => {
         try {
-            await axios.post(`${API_BASE}/api/staff/loans/${loanId}/decision`, { status });
+            await api.post(`/staff/loans/${loanId}/decision`, { status });
             fetchPendingLoans();
             fetchMetrics();
         } catch (err) {
@@ -181,7 +181,7 @@ const WorkerDashboard = ({ initialView = 'metrics' }) => {
                                 <button
                                     onClick={async () => {
                                         try {
-                                            const res = await axios.get(`${API_BASE}/api/staff/export-ledger`);
+                                            const res = await api.get('/staff/export-ledger');
                                             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(res.data, null, 2));
                                             const downloadAnchorNode = document.createElement('a');
                                             downloadAnchorNode.setAttribute("href", dataStr);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 
 const FundInjectionModal = ({ isOpen, onClose, onSuccess, API_BASE, initialAccountNumber = '' }) => {
     const [formData, setFormData] = useState({ accountNumber: initialAccountNumber, amount: '', reference: '' });
@@ -21,7 +21,7 @@ const FundInjectionModal = ({ isOpen, onClose, onSuccess, API_BASE, initialAccou
         setIsLoading(true);
         setError(null);
         try {
-            await axios.post(`${API_BASE}/api/staff/deposit`, {
+            await api.post('/staff/deposit', {
                 accountNumber: formData.accountNumber,
                 amount: parseFloat(formData.amount),
                 reference: formData.reference || 'Manual Staff Injection'

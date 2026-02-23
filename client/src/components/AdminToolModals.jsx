@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { X, ShieldAlert, BarChart3, ClipboardCheck, Download, AlertTriangle } from 'lucide-react';
 
 export const RiskAssessmentModal = ({ isOpen, onClose, API_BASE }) => {
@@ -8,7 +8,7 @@ export const RiskAssessmentModal = ({ isOpen, onClose, API_BASE }) => {
 
     useEffect(() => {
         if (isOpen) {
-            axios.get(`${API_BASE}/api/staff/risk-assessment`)
+            api.get('/staff/risk-assessment')
                 .then(res => setData(res.data))
                 .finally(() => setIsLoading(false));
         }
@@ -66,7 +66,7 @@ export const ComplianceAuditModal = ({ isOpen, onClose, API_BASE }) => {
 
     useEffect(() => {
         if (isOpen) {
-            axios.get(`${API_BASE}/api/staff/compliance-report`)
+            api.get('/staff/compliance-report')
                 .then(res => setData(res.data))
                 .finally(() => setIsLoading(false));
         }

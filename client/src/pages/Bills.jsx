@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import {
     Wallet,
@@ -27,7 +27,7 @@ const Bills = () => {
 
     const fetchBills = async () => {
         try {
-            const res = await axios.get(`${API_BASE}/api/bills`);
+            const res = await api.get('/bills');
             setBills(res.data);
 
             // If no bills exist, seed some for simulation
@@ -50,9 +50,9 @@ const Bills = () => {
 
         try {
             for (const bill of initialBills) {
-                await axios.post(`${API_BASE}/api/bills`, bill);
+                await api.post('/bills', bill);
             }
-            const res = await axios.get(`${API_BASE}/api/bills`);
+            const res = await api.get('/bills');
             setBills(res.data);
         } catch (err) {
             console.error('Seeding failed');
@@ -63,7 +63,7 @@ const Bills = () => {
         setIsPaying(billId);
         setError(null);
         try {
-            await axios.post(`${API_BASE}/api/bills/${billId}/pay`);
+            await api.post(`/bills/${billId}/pay`);
             await fetchBills();
         } catch (err) {
             setError(err.response?.data?.message || 'Institutional payment failed');

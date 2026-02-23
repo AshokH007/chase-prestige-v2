@@ -41,11 +41,7 @@ const login = async (req, res, next) => {
         }
 
         // Generate Institutional JWT (30 minute strategic window)
-        const token = jwt.sign(
-            { id: user.id, email: user.email, customer_id: user.customer_id, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: '30m' }
-        );
+        const token = generateToken(user);
 
         const decoded = jwt.decode(token);
         const sessionPin = derivePinFromToken(token);

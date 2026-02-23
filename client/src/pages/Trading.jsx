@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import api from '../api/axios';
 import {
     TrendingUp,
     TrendingDown,
@@ -45,7 +45,7 @@ const Trading = () => {
 
     const fetchPortfolio = async () => {
         try {
-            const res = await axios.get(`${API_BASE}/api/investments`);
+            const res = await api.get('/investments');
             setAssets(res.data);
         } catch (err) {
             console.error("Failed to fetch portfolio");
@@ -61,7 +61,7 @@ const Trading = () => {
         const currentPrice = marketData[selectedAsset].price;
 
         try {
-            await axios.post(`${API_BASE}/api/investments/trade`, {
+            await api.post('/investments/trade', {
                 symbol: selectedAsset,
                 name: marketData[selectedAsset].name,
                 type: ['BTC', 'ETH'].includes(selectedAsset) ? 'CRYPTO' : selectedAsset === 'SPY' ? 'ETF' : 'STOCK',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { Search, X, TrendingUp, FileText, Sparkles, Navigation, User } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +34,7 @@ const GlobalSearch = ({ API_BASE }) => {
         const handler = setTimeout(async () => {
             setIsLoading(true);
             try {
-                const res = await axios.get(`${API_BASE}/api/search?q=${query}`);
+                const res = await api.get(`/search?q=${query}`);
                 setResults(res.data.results);
                 setIsOpen(true);
             } catch (err) {

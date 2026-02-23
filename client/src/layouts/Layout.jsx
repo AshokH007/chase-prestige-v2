@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import GlobalSearch from '../components/GlobalSearch';
 import { Bell, Search, User, LogOut, Clock, AlertCircle, CheckCircle2 } from 'lucide-react';
-import axios from 'axios';
+import api from '../api/axios';
 import { clsx } from 'clsx';
 import { useEffect } from 'react';
 
@@ -20,7 +20,7 @@ const Layout = ({ children }) => {
     const fetchNotifications = async () => {
         if (!user || user.role !== 'CLIENT') return;
         try {
-            const res = await axios.get(`${API_BASE}/api/loans/notifications`);
+            const res = await api.get('/loans/notifications');
             setNotifications(res.data);
         } catch (err) {
             console.error('Failed to fetch notifications');

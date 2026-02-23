@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import {
     Landmark,
@@ -36,7 +36,7 @@ const Loans = () => {
         const reason = prompt('Institutional Extension Request - Please state your reason:');
         if (!reason) return;
         try {
-            await axios.post(`${API_BASE}/api/loans/${loanId}/extend`, { reason });
+            await api.post(`/loans/${loanId}/extend`, { reason });
             await fetchLoans();
             alert('Extension request transmitted to credit committee.');
         } catch (err) {
@@ -46,7 +46,7 @@ const Loans = () => {
 
     const fetchLoans = async () => {
         try {
-            const res = await axios.get(`${API_BASE}/api/loans`);
+            const res = await api.get('/loans');
             setLoans(res.data);
         } catch (err) {
             console.error('Failed to fetch loans');
@@ -58,7 +58,7 @@ const Loans = () => {
     const handleApply = async () => {
         setIsApplying(true);
         try {
-            await axios.post(`${API_BASE}/api/loans/apply`, {
+            await api.post('/loans/apply', {
                 amount: simAmount,
                 termMonths: simTerm,
                 purpose

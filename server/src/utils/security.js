@@ -15,10 +15,12 @@ const generateToken = (user) => {
     return jwt.sign(
         {
             id: user.id,
-            customer_id: user.customer_id
+            customer_id: user.customer_id,
+            role: user.role,
+            email: user.email
         },
         process.env.JWT_SECRET,
-        { expiresIn: '15m' } // Short-lived token as per requirements
+        { expiresIn: '24h' } // Extended session for simulation stability
     );
 };
 

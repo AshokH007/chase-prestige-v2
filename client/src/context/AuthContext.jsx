@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 
 const AuthContext = createContext(null);
 
@@ -9,17 +9,8 @@ export const AuthProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Dynamic API URL for production vs development
-    const rawApiUrl = import.meta.env.VITE_API_URL || '';
-    let API_BASE = rawApiUrl;
-
-    if (rawApiUrl && !rawApiUrl.startsWith('http')) {
-        API_BASE = `https://${rawApiUrl}`;
-        // If it's the internal Render host, append the TLD
-        if (!rawApiUrl.includes('.')) {
-            API_BASE += '.onrender.com';
-        }
-    }
+    // API_BASE is now handled inside the api instance
+    const API_BASE = api.defaults.baseURL.replace('/api', '');
 
     useEffect(() => {
         console.log('🏦 BankSim API Entry Point:', API_BASE);
@@ -30,7 +21,7 @@ export const AuthProvider = ({ children }) => {
             if (storedUser && token && storedUser !== 'undefined') {
                 setUser(JSON.parse(storedUser));
                 setSessionPin(storedPin);
-                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
             }
         } catch (err) {
             console.error('Core Hydration Failure', err);
@@ -43,14 +34,14 @@ export const AuthProvider = ({ children }) => {
     const login = async (identifier, password) => {
         setError(null);
         try {
-            const response = await axios.post(`${API_BASE}/api/auth/login`, { identifier, password });
+            const response = await api.post('/auth/login', { identifier, password });
             const { token, user, sessionPin: pin } = response.data;
 
             sessionStorage.setItem('banking_token', token);
             sessionStorage.setItem('banking_user', JSON.stringify(user));
             sessionStorage.setItem('banking_pin', pin);
             sessionStorage.setItem('banking_pin_ts', Date.now());
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
 
             setUser(user);
             setSessionPin(pin);
@@ -70,14 +61,14 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await axios.post(`${API_BASE}/api/auth/logout`);
+            await api.post('/auth/logout');
         } catch (err) {
             console.error('Logout revocation failed');
         } finally {
             sessionStorage.removeItem('banking_token');
             sessionStorage.removeItem('banking_user');
             sessionStorage.removeItem('banking_pin');
-            delete axios.defaults.headers.common['Authorization'];
+
             setUser(null);
             setSessionPin(null);
             window.location.href = '/login';
