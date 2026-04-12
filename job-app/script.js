@@ -1,33 +1,33 @@
 const routes = {
     '/': {
-        title: 'Welcome',
-        description: 'Establish the core parameters for your automated job board oversight.',
-        showProgress: false
+        title: 'Stop Missing The Right Jobs.',
+        description: 'Precision-matched job discovery delivered daily at 9AM.',
+        type: 'hero'
     },
     '/dashboard': {
         title: 'Dashboard',
-        description: 'This section will be built in the next step.',
-        showProgress: true
+        description: 'No jobs yet. In the next step, you will load a realistic dataset.',
+        type: 'empty'
     },
     '/saved': {
         title: 'Saved Jobs',
-        description: 'This section will be built in the next step.',
-        showProgress: true
+        description: 'Your curated list of opportunities. No data yet.',
+        type: 'empty'
     },
     '/digest': {
         title: 'Weekly Digest',
-        description: 'This section will be built in the next step.',
-        showProgress: true
+        description: 'Premium daily summary features will be available here soon.',
+        type: 'empty'
     },
     '/settings': {
-        title: 'Settings',
-        description: 'This section will be built in the next step.',
-        showProgress: true
+        title: 'Job Preferences',
+        description: 'Define your search parameters to receive tailored notifications.',
+        type: 'settings'
     },
     '/proof': {
         title: 'Proof & Progress',
-        description: 'This section will be built in the next step.',
-        showProgress: true
+        description: 'Placeholder page for artifact collection.',
+        type: 'plain'
     }
 };
 
@@ -43,40 +43,100 @@ function router() {
     const route = routes[path];
 
     if (route) {
-        renderPage(route.title, route.description, route.showProgress);
+        renderPage(path, route);
         updateActiveLink(path);
     } else {
         render404();
     }
     
-    // Auto-close mobile menu on navigation
     navLinksContainer.classList.remove('open');
 }
 
-function renderPage(title, description, showProgress) {
-    appRoot.innerHTML = `
+function renderPage(path, route) {
+    let content = '';
+
+    if (route.type === 'hero') {
+        content = `
+            <section class="context-header" style="padding: 80px 0; text-align: center;">
+                <div style="max-width: var(--max-content-width); margin: 0 auto; width: 100%; padding: 0 var(--space-3);">
+                    <h1 style="font-size: 56px; margin-bottom: 24px;">${route.title}</h1>
+                    <p style="font-size: 20px; color: var(--text-secondary); margin-bottom: 40px; line-height: 1.6;">${route.description}</p>
+                    <a href="#/settings" class="btn btn-primary" style="padding: 16px 32px; font-size: 17px;">Start Tracking</a>
+                </div>
+            </section>
+        `;
+    } else if (route.type === 'settings') {
+        content = `
+            ${renderHeader(route.title, route.description)}
+            <main class="workspace-container">
+                <div class="primary-workspace">
+                    <div class="card">
+                        <div class="input-group">
+                            <label>Role Keywords</label>
+                            <input type="text" placeholder="e.g. Senior Frontend Engineer, Staff Designer">
+                        </div>
+                        <div class="input-group">
+                            <label>Preferred Locations</label>
+                            <input type="text" placeholder="e.g. New York, London, Remote">
+                        </div>
+                        <div class="input-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                            <div>
+                                <label>Mode</label>
+                                <select style="width: 100%;">
+                                    <option>Remote</option>
+                                    <option>Hybrid</option>
+                                    <option>Onsite</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Experience Level</label>
+                                <select style="width: 100%;">
+                                    <option>Junior</option>
+                                    <option>Mid-level</option>
+                                    <option>Senior</option>
+                                    <option>Lead / Staff</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: var(--space-3);">Save Preferences</button>
+                    </div>
+                </div>
+                <aside class="secondary-panel">
+                    <h3 style="font-size: 16px; margin-bottom: 16px; font-weight: 600;">Preference Logic</h3>
+                    <p style="font-size: 14px; color: var(--text-secondary);">These settings determine the matching algorithm's accuracy. Be as specific as possible with keywords.</p>
+                </aside>
+            </main>
+        `;
+    } else {
+        content = `
+            ${renderHeader(route.title, route.description)}
+            <main class="workspace-container">
+                <div class="primary-workspace">
+                    <div class="card" style="border-style: dashed; padding: 64px; text-align: center; opacity: 0.7;">
+                        <p style="color: var(--text-secondary);">${route.description}</p>
+                    </div>
+                </div>
+                <aside class="secondary-panel">
+                    <h3 style="font-size: 16px; margin-bottom: 16px; font-weight: 600;">Status</h3>
+                    <p style="font-size: 14px; color: var(--text-secondary);">This view is in a placeholder state. Functional components will be integrated in the next development cycle.</p>
+                </aside>
+            </main>
+        `;
+    }
+
+    appRoot.innerHTML = content;
+    progressText.style.display = (path !== '/' && path !== '/proof' && path !== '/') ? 'inline' : 'none';
+}
+
+function renderHeader(title, description) {
+    return `
         <section class="context-header">
             <div style="max-width: 1440px; margin: 0 auto; width: 100%;">
-                <h1 style="font-size: 40px; margin-bottom: 8px;">${title}</h1>
+                <h1 style="font-size: 32px; margin-bottom: 8px;">${title}</h1>
                 <p style="color: var(--text-secondary); margin-bottom: 0;">${description}</p>
             </div>
         </section>
-        <main class="workspace-container">
-            <div class="primary-workspace">
-                <div class="card" style="border-style: dashed; opacity: 0.6;">
-                    <div style="text-align: center; padding: 64px;">
-                        <p style="color: var(--text-secondary);">The ${title} interface is currently under construction.</p>
-                    </div>
-                </div>
-            </div>
-            <aside class="secondary-panel">
-                <h3 style="font-size: 18px; margin-bottom: 16px; font-family: var(--font-body); font-weight: 600;">Information</h3>
-                <p style="font-size: 15px; color: var(--text-secondary);">Please return in the next stage of development to see the functional components of this page.</p>
-            </aside>
-        </main>
     `;
-    
-    progressText.style.display = showProgress ? 'inline' : 'none';
 }
 
 function render404() {
@@ -91,7 +151,6 @@ function render404() {
             <a href="#/" class="btn btn-primary">Return Home</a>
         </main>
     `;
-    progressText.style.display = 'none';
     updateActiveLink(null);
 }
 
@@ -107,3 +166,4 @@ window.addEventListener('load', router);
 menuToggle.addEventListener('click', () => {
     navLinksContainer.classList.toggle('open');
 });
+
