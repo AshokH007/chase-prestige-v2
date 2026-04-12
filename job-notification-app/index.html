@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Notification App</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="main-layout">
+        <!-- TOP BAR -->
+        <header class="top-bar">
+            <div class="app-logo">
+                <a href="#/" style="font-weight: 600; color: inherit;">Job Notification App</a>
+            </div>
+            
+            <nav>
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#/dashboard" class="nav-link">Dashboard</a></li>
+                    <li><a href="#/saved" class="nav-link">Saved</a></li>
+                    <li><a href="#/digest" class="nav-link">Digest</a></li>
+                    <li><a href="#/settings" class="nav-link">Settings</a></li>
+                    <li><a href="#/proof" class="nav-link">Proof</a></li>
+                </ul>
+            </nav>
+
+            <div class="status-box" style="display: flex; align-items: center; gap: 16px;">
+                <span id="progressText" style="color: var(--text-secondary); font-size: 14px; display: none;">Step 1 / 4</span>
+                <span id="statusBadge" class="badge badge-neutral">Not Started</span>
+            </div>
+        </header>
+
+        <!-- ROUTING OUTLET -->
+        <div id="app-root">
+            <!-- Content will be injected here by script.js -->
+        </div>
+
+        <!-- PROOF FOOTER -->
+        <footer class="proof-footer">
+            <div class="checklist-item">
+                <input type="checkbox" checked disabled>
+                <span>UI Built</span>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check-logic" disabled>
+                <span>Logic Working</span>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check-test" disabled>
+                <span>Test Passed</span>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check-deploy" disabled>
+                <span>Deployed</span>
+            </div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
