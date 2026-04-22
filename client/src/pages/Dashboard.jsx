@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-const BUILD_VERSION = "2.5.5"; // SYNC STATE HARDENING
+const BUILD_VERSION = "2.5.6"; // WHITE SCREEN FIX
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import TransactionList from '../components/TransactionList';
@@ -14,12 +15,14 @@ import {
     Send,
     AlertCircle,
     AlertTriangle,
-    CheckCircle2
+    CheckCircle2,
+    TrendingUp
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
 const Dashboard = ({ initialView = 'overview' }) => {
     const { user, sessionPin, API_BASE } = useAuth();
+    const navigate = useNavigate();
     const [accountData, setAccountData] = useState(null);
     const [accountBalance, setAccountBalance] = useState(undefined);
     const [transactions, setTransactions] = useState([]);
