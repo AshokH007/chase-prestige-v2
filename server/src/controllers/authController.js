@@ -53,11 +53,16 @@ const login = async (req, res, next) => {
         );
 
         // DELIVER STRATEGIC AUTHORIZATION KEY (New dynamic PIN protocol)
-        await pool.query(
-            `INSERT INTO banking.notifications (user_id, title, message) 
-             VALUES ($1, $2, $3)`,
-            [user.id, 'Strategic Authorization Key Active', `Your 4-digit session key for balance reveal and transfers is: ${sessionPin}. This key is valid for this session only.`]
-        );
+        try {
+            await pool.query(
+                `INSERT INTO banking.notifications (user_id, title, message) 
+                 VALUES ($1, $2, $3)`,
+                [user.id, 'Strategic Authorization Key Active', `Your 4-digit session key for balance reveal and transfers is: ${sessionPin}. This key is valid for this session only.`]
+            );
+        } catch (notifErr) {
+            // Non-critical: notification insert failure should NOT block login
+            console.warn('[Auth] Notification insert skipped:', notifErr.message);
+        }
 
         res.json({
             token,

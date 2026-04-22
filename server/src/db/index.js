@@ -298,8 +298,8 @@ async function initializeDatabase() {
   }
 }
 
-// Trigger initialization (Always runs to ensure schema/PIN sync)
-initializeDatabase();
+// Trigger initialization and export the promise so server.js can gate startup
+const initReady = initializeDatabase();
 
 // Test connection
 pool.query('SELECT NOW()', (err, res) => {
@@ -315,10 +315,10 @@ pool.query('SELECT NOW()', (err, res) => {
 module.exports = {
   query: (text, params) => {
     if (!isProduction) {
-      // Simple logging for dev
       console.log(`[DB] Executing: ${text}`, params);
     }
     return pool.query(text, params);
   },
   pool,
+  initReady,
 };
