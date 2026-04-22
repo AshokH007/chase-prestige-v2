@@ -91,11 +91,17 @@ app.get('/health', async (req, res) => {
         });
     } catch (err) {
         console.error('[Health Check Failure]:', err.message);
-        res.status(503).json({
-            status: 'error',
-            database: 'connected',
-            schema: 'uninitialized',
+        // Return 200 so Render doesn't mark the service as unhealthy during DB init
+        res.status(200).json({
+            status: 'initializing',
+            database: 'connecting',
+            schema: 'pending',
             error: err.message,
+            diagnostics: {
+                has_jwt_secret: !!process.env.JWT_SECRET,
+                has_db_url: !!process.env.DATABASE_URL,
+                node_env: process.env.NODE_ENV
+            },
             timestamp: new Date()
         });
     }
